@@ -43,7 +43,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
                 
                 let weatherJSON : JSON = JSON(response.result.value!)
                 
-                // print(weatherJSON)
+                print(weatherJSON)
                 self.updateWeatherData(json: weatherJSON)
                 
             }
@@ -67,6 +67,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         weatherDataModel.condition = json["weather"][0]["id"].intValue
         weatherDataModel.weatherIconName = weatherDataModel.updateWeatherIcon(condition: weatherDataModel.condition)
             
+            print("This is for \(weatherDataModel.city)./")
         updateUIWithWeatherData()
         }
         else {
@@ -118,6 +119,10 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     
     func userEnteredANewCityName(city: String) {
         print(city)
+        
+        let params : [String : String] = ["q" : city, "appid" : APP_ID]
+        
+        getWeatherData(url: WEATHER_URL, parameters: params)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
