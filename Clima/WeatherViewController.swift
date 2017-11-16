@@ -3,20 +3,25 @@ import UIKit
 import CoreLocation
 import Alamofire
 import SwiftyJSON
+import MediaPlayer
 
 
 class WeatherViewController: UIViewController, CLLocationManagerDelegate, ChangeCityDelegate {
     
-    //Constants
     let WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather"
     let APP_ID = "e72ca729af228beabd5d20e3b7749713"
     let locationManager = CLLocationManager()
     let weatherDataModel = WeatherDataModel()
     
+    var musicPlayer = MPMusicPlayerController.applicationMusicPlayer()
+    var currentPlaylist = ""
+    var currentCity = ""
+    
     @IBOutlet weak var weatherIcon: UIImageView!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
 
+    @IBOutlet weak var nowPlaying: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +33,65 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         
     }
     
+    //MARK: - Privacy
+    /***************************************************************/
+    
+    //    func Auth(pass: Int) {
+    //
+    //        if #available(iOS 9.3, *) {
+    //            MPMediaLibrary.requestAuthorization { (status) in
+    //
+    //            if status == .authorized {
+    //
+    //                musicType(weather: pass)
+    //            }
+    //
+    //            else {
+    //                  // Fallback on earlier versions
+    //            }
+    //            
+    //        }
+    //    }
+    
+    //MARK: - Play Music
+    /***************************************************************/
+    
+    @IBAction func playButton(_ sender: UIButton){
+        self.playMusic(playlist: self.currentPlaylist)
+    }
+    
+    @IBAction func stopButton(_ sender: UIButton) {
+        musicPlayer.stop()
+    }
+    
+    @IBAction func backButton(_ sender: UIButton) {
+        musicPlayer.skipToPreviousItem()
+    }
+    
+    @IBAction func nextButton(_ sender: UIButton) {
+        musicPlayer.skipToNextItem()
+    }
+    
+    func playMusic(playlist: String) {
+        musicPlayer.stop()
+        
+        let query = MPMediaQuery()
+        let predicate = MPMediaPropertyPredicate(value: playlist, forProperty: MPMediaPlaylistPropertyName)
+        
+        query.addFilterPredicate(predicate)
+        
+        musicPlayer.setQueue(with: query)
+        musicPlayer.shuffleMode = .songs
+//        let currentSong = MPMediaItemPropertyTitle
+//        nowPlaying.text = currentSong
+        musicPlayer.play()
+        
+    }
+    
+    
+    @IBAction func refreshWeather(_ sender: UIButton) {
+        viewDidLoad()
+    }
     
     
     //MARK: - Networking
@@ -62,28 +126,47 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         
         if let tempResult = json["main"]["temp"].double {
         
-        weatherDataModel.temperature = Int(tempResult - 273.15) //kelvin
+        weatherDataModel.temperature = Int(1.8 * Double(tempResult - 273)) + 32
         weatherDataModel.city = json["name"].stringValue
-        weatherDataModel.condition = json["weather"][0]["id"].intValue
+        currentCity = json["name"].stringValue
+        weatherDataModel.condition = 800 //json["weather"][0]["id"].intValue
+        let weatherType = weatherDataModel.condition
         weatherDataModel.weatherIconName = weatherDataModel.updateWeatherIcon(condition: weatherDataModel.condition)
             
-            print("This is for \(weatherDataModel.city)./")
-        updateUIWithWeatherData()
-        }
-        else {
-            cityLabel.text = "Weather Unavaiable"
-        }
-    }
-    
-    //MARK: - UI Updates
-    /***************************************************************/
-
-    func updateUIWithWeatherData() {
-        
         cityLabel.text = weatherDataModel.city
         temperatureLabel.text = "\(weatherDataModel.temperature)"
         weatherIcon.image = UIImage(named: weatherDataModel.weatherIconName)
+            
+        print("This is for \(weatherDataModel.city).")
+            
+        musicType(weather: weatherType)
+            
+        }
+            
+        else {
+          cityLabel.text = "Weather Unavaiable"
+        }
+    }
     
+    //MARK: - Music Type
+    /***************************************************************/
+    
+    func musicType(weather: Int) {
+        
+        switch (weather) {
+        
+        case 0...300 :
+            currentPlaylist = "Rainy"
+            playMusic(playlist: self.currentPlaylist)
+            
+        case 700...800 :
+            currentPlaylist = "Sunny"
+            playMusic(playlist: self.currentPlaylist)
+        
+        default :
+            print("musicType fail")
+            
+        }
     }
     
     //MARK: - Location Manager Delegate Methods
@@ -125,15 +208,16 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         getWeatherData(url: WEATHER_URL, parameters: params)
     }
     
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "ChangeCityName" {
+        if segue.identifier == "changeCityName" {
             let destinationVC = segue.destination as! ChangeCityViewController
             
             destinationVC.delegate = self
         }
     }
 
-    
+
 }
 
 
