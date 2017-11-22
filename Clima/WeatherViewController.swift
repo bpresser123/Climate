@@ -6,7 +6,8 @@ import SwiftyJSON
 import MediaPlayer
 
 
-class WeatherViewController: UIViewController, CLLocationManagerDelegate, ChangeCityDelegate {
+class WeatherViewController: UIViewController, CLLocationManagerDelegate, ChangeCityDelegate, ChangeMusicDelegate {
+    
     
     let WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather"
     let APP_ID = "e72ca729af228beabd5d20e3b7749713"
@@ -16,6 +17,11 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     var musicPlayer = MPMusicPlayerController.applicationMusicPlayer()
     var currentPlaylist = ""
     var currentCity = ""
+    var weatherType: Int?
+    //var localAudio = true
+    var audioSource: Bool?
+    
+    //var musicSource: MusicSourceType = .LocalMusic
     
     @IBOutlet weak var weatherIcon: UIImageView!
     @IBOutlet weak var cityLabel: UILabel!
@@ -25,13 +31,17 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+    
     locationManager.delegate = self
     locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     locationManager.requestWhenInUseAuthorization()
     locationManager.startUpdatingLocation()
         
     }
+    
+//    func setAudioType() {
+//      setAudio
+//    }
     
     //MARK: - Privacy
     /***************************************************************/
@@ -65,7 +75,16 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     }
     
     @IBAction func backButton(_ sender: UIButton) {
+        
+        if audioSource == true {
+        print("Local")
         musicPlayer.skipToPreviousItem()
+        }
+        else {
+        print("No Spotify yet..")
+        musicPlayer.skipToPreviousItem()
+        }
+
     }
     
     @IBAction func nextButton(_ sender: UIButton) {
@@ -130,7 +149,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         weatherDataModel.city = json["name"].stringValue
         currentCity = json["name"].stringValue
         weatherDataModel.condition = 800 //json["weather"][0]["id"].intValue
-        let weatherType = weatherDataModel.condition
+        weatherType = weatherDataModel.condition
         weatherDataModel.weatherIconName = weatherDataModel.updateWeatherIcon(condition: weatherDataModel.condition)
             
         cityLabel.text = weatherDataModel.city
@@ -138,20 +157,30 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         weatherIcon.image = UIImage(named: weatherDataModel.weatherIconName)
             
         print("This is for \(weatherDataModel.city).")
-            
-        musicType(weather: weatherType)
-            
+        
+        //musicType(weather: weatherType!)
+        
+        musicSource()
+     
         }
-            
         else {
           cityLabel.text = "Weather Unavaiable"
+        }
+    }
+    
+    func musicSource() {
+        if audioSource == true {
+          localMusic(weather: weatherType!)
+        }
+        else {
+            print("No Spotify yet..")
         }
     }
     
     //MARK: - Music Type
     /***************************************************************/
     
-    func musicType(weather: Int) {
+    func localMusic(weather: Int) {
         
         switch (weather) {
         
@@ -167,6 +196,10 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             print("musicType fail")
             
         }
+    }
+    
+    func spotify(weather: Int) {
+        
     }
     
     //MARK: - Location Manager Delegate Methods
@@ -216,8 +249,23 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             destinationVC.delegate = self
         }
     }
+    
+    func didSetAudio(sourceType: Bool) {
+        self.audioSource = sourceType
+    }
 
+//    enum MusicSourceType {
+//        
+//        switch source {
+//        case LocalMusic :
+//          self.setAudio = true
+//        case Spotify :
+//          self.setAudio = false
+//        }
+//    }
 
 }
+
+
 
 
