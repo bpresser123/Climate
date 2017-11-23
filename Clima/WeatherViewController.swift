@@ -14,11 +14,16 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     let locationManager = CLLocationManager()
     let weatherDataModel = WeatherDataModel()
     
+    var spotifyURL = "https://api.spotify.com/v1/users/bp123/playlists?offset=10"
+    let spotifyKey = "BQDyQlU7-kTGxXjUoUlEpnkBiGjwWjWLsjNSX-td4kcLxPBwYQTbWA8jeNVab_pW8w46XmW7tTZRfylDiQW6jK1_ObM9Z3sSTHCJn7Kz2t2fG8YULBvZt9nH_NkDmjY9NR0s_TuiMtRwt7tfgWcjFu5D3IdUPmuV0yDCL3C4UgmB__W7AGpkVjvJCW0t39wmqS9qvU7-B5RNcm3c4x3lKfD1qnaEXhvvfrSVGX7fGylC0VZq7-lA"
+    
+    typealias JSONStandard = [String : AnyObject]
+    var names = [String]()
+    
     var musicPlayer = MPMusicPlayerController.applicationMusicPlayer()
     var currentPlaylist = ""
     var currentCity = ""
     var weatherType: Int?
-    //var localAudio = true
     var audioSource: Bool?
     
     //var musicSource: MusicSourceType = .LocalMusic
@@ -36,12 +41,8 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     locationManager.requestWhenInUseAuthorization()
     locationManager.startUpdatingLocation()
-        
+//    callAlamoSpotify(url: spotifyURL)
     }
-    
-//    func setAudioType() {
-//      setAudio
-//    }
     
     //MARK: - Privacy
     /***************************************************************/
@@ -168,12 +169,15 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         }
     }
     
+    //MARK: - Music Source
+    /***************************************************************/
+    
     func musicSource() {
         if audioSource == true {
           localMusic(weather: weatherType!)
         }
         else {
-            print("No Spotify yet..")
+          print("No Spotify yet..")
         }
     }
     
@@ -198,9 +202,9 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         }
     }
     
-    func spotify(weather: Int) {
-        
-    }
+//    func spotify(weather: Int) {
+//        
+//    }
     
     //MARK: - Location Manager Delegate Methods
     /***************************************************************/
@@ -229,6 +233,47 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         print(error)
         cityLabel.text = "Location Unavailable"
     }
+    
+    //MARK: - Spotify
+    /***************************************************************/
+    
+//    func callAlamoSpotify(url: String) {
+//        Alamofire.request(url).responseJSON(completionHandler: {
+//            response in
+//            
+//            self.parseSpotifyData(JSONData: response.data!)
+//        })
+//        
+//    }
+//    
+//    func parseSpotifyData(JSONData : Data) {
+//      
+//      do {
+//        let readableJSON = try JSONSerialization.jsonObject(with: JSONData, options: .mutableContainers) as! JSONStandard
+//        if let playlists = readableJSON["playlists"] as? JSONStandard {
+//          if let items = playlists["items"] {
+//            for i in 0..< items.count {
+//              let item = items[i] as! JSONStandard
+//                
+//              let name = item["name"] as! String
+//                
+//              names.append(name)
+//                
+//            }
+//          }
+//        }
+//        
+//      print(readableJSON as Any)
+//      
+//      }
+//      catch {
+//        print(error)
+//      }
+//    }
+//    
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return names.count
+//    }
     
     //MARK: - Change City Delegate methods
     /***************************************************************/
