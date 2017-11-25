@@ -8,31 +8,39 @@ import MediaPlayer
 
 class WeatherViewController: UIViewController, CLLocationManagerDelegate, ChangeCityDelegate, ChangeMusicDelegate {
     
+    //MARK: - Weather Outlets/Values
+    /***************************************************************/
+    
+    @IBOutlet weak var weatherIcon: UIImageView!
+    @IBOutlet weak var cityLabel: UILabel!
+    @IBOutlet weak var temperatureLabel: UILabel!
     
     let WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather"
     let APP_ID = "e72ca729af228beabd5d20e3b7749713"
     let locationManager = CLLocationManager()
     let weatherDataModel = WeatherDataModel()
     
-    var spotifyURL = "https://api.spotify.com/v1/users/bp123/playlists?offset=10"
-    let spotifyKey = "BQDyQlU7-kTGxXjUoUlEpnkBiGjwWjWLsjNSX-td4kcLxPBwYQTbWA8jeNVab_pW8w46XmW7tTZRfylDiQW6jK1_ObM9Z3sSTHCJn7Kz2t2fG8YULBvZt9nH_NkDmjY9NR0s_TuiMtRwt7tfgWcjFu5D3IdUPmuV0yDCL3C4UgmB__W7AGpkVjvJCW0t39wmqS9qvU7-B5RNcm3c4x3lKfD1qnaEXhvvfrSVGX7fGylC0VZq7-lA"
-    
-    typealias JSONStandard = [String : AnyObject]
-    var names = [String]()
+    //MARK: - Local Music Values
+    /***************************************************************/
     
     var musicPlayer = MPMusicPlayerController.applicationMusicPlayer()
     var currentPlaylist = ""
     var currentCity = ""
     var weatherType: Int?
-    var audioSource: Bool?
-    
+    var audioSource: Bool = true
     //var musicSource: MusicSourceType = .LocalMusic
     
-    @IBOutlet weak var weatherIcon: UIImageView!
-    @IBOutlet weak var cityLabel: UILabel!
-    @IBOutlet weak var temperatureLabel: UILabel!
-
-    @IBOutlet weak var nowPlaying: UILabel!
+    //MARK: - Spotify Values
+    /***************************************************************/
+    
+    var spotifyURL = "https://api.spotify.com/v1/users/bp123/playlists?offset=10"
+    let spotifyKey = "BQDyQlU7-kTGxXjUoUlEpnkBiGjwWjWLsjNSX-td4kcLxPBwYQTbWA8jeNVab_pW8w46XmW7tTZRfylDiQW6jK1_ObM9Z3sSTHCJn7Kz2t2fG8YULBvZt9nH_NkDmjY9NR0s_TuiMtRwt7tfgWcjFu5D3IdUPmuV0yDCL3C4UgmB__W7AGpkVjvJCW0t39wmqS9qvU7-B5RNcm3c4x3lKfD1qnaEXhvvfrSVGX7fGylC0VZq7-lA"
+    
+    typealias JSONStandard = [String : AnyObject]
+    var names = [String]()
+ 
+    //MARK: - viewDidLoad
+    /***************************************************************/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +49,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     locationManager.requestWhenInUseAuthorization()
     locationManager.startUpdatingLocation()
-//    callAlamoSpotify(url: spotifyURL)
+    //  callAlamoSpotify(url: spotifyURL)
     }
     
     //MARK: - Privacy
@@ -64,55 +72,33 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     //        }
     //    }
     
-    //MARK: - Play Music
+    //MARK: - Location Manager Delegate Methods
     /***************************************************************/
     
-    @IBAction func playButton(_ sender: UIButton){
-        self.playMusic(playlist: self.currentPlaylist)
-    }
-    
-    @IBAction func stopButton(_ sender: UIButton) {
-        musicPlayer.stop()
-    }
-    
-    @IBAction func backButton(_ sender: UIButton) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations[locations.count - 1]
         
-        if audioSource == true {
-        print("Local")
-        musicPlayer.skipToPreviousItem()
+        if location.horizontalAccuracy > 0 {
+            locationManager.stopUpdatingLocation()
+            locationManager.delegate = nil
+            
+            //print("longitude = \(location.coordinate.longitude), latitude = \(location.coordinate.latitude)")
+            
+            let latitude = String(location.coordinate.latitude)
+            let longitude = String(location.coordinate.longitude)
+            
+            let params : [String : String] = ["lat" : latitude, "lon" : longitude, "appid" : APP_ID]
+            
+            print(params)
+            
+            getWeatherData(url: WEATHER_URL, parameters: params)
         }
-        else {
-        print("No Spotify yet..")
-        musicPlayer.skipToPreviousItem()
-        }
-
     }
     
-    @IBAction func nextButton(_ sender: UIButton) {
-        musicPlayer.skipToNextItem()
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error)
+        cityLabel.text = "Location Unavailable"
     }
-    
-    func playMusic(playlist: String) {
-        musicPlayer.stop()
-        
-        let query = MPMediaQuery()
-        let predicate = MPMediaPropertyPredicate(value: playlist, forProperty: MPMediaPlaylistPropertyName)
-        
-        query.addFilterPredicate(predicate)
-        
-        musicPlayer.setQueue(with: query)
-        musicPlayer.shuffleMode = .songs
-//        let currentSong = MPMediaItemPropertyTitle
-//        nowPlaying.text = currentSong
-        musicPlayer.play()
-        
-    }
-    
-    
-    @IBAction func refreshWeather(_ sender: UIButton) {
-        viewDidLoad()
-    }
-    
     
     //MARK: - Networking
     /***************************************************************/
@@ -158,8 +144,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         weatherIcon.image = UIImage(named: weatherDataModel.weatherIconName)
             
         print("This is for \(weatherDataModel.city).")
-        
-        //musicType(weather: weatherType!)
+        //  musicType(weather: weatherType!)
         
         musicSource()
      
@@ -168,6 +153,52 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
           cityLabel.text = "Weather Unavaiable"
         }
     }
+    
+    //MARK: - Music Controls
+    /***************************************************************/
+    
+    @IBAction func playButton(_ sender: UIButton){
+        self.playMusic(playlist: self.currentPlaylist)
+    }
+    
+    @IBAction func stopButton(_ sender: UIButton) {
+        musicPlayer.stop()
+    }
+    
+    @IBAction func backButton(_ sender: UIButton) {
+        
+        if audioSource == true {
+            print("Local")
+            musicPlayer.skipToPreviousItem()
+        }
+        else {
+            print("No Spotify yet..")
+            musicPlayer.skipToPreviousItem()
+        }
+        
+    }
+    
+    @IBAction func nextButton(_ sender: UIButton) {
+        musicPlayer.skipToNextItem()
+    }
+    
+    func playMusic(playlist: String) {
+        musicPlayer.stop()
+        
+        let query = MPMediaQuery()
+        let predicate = MPMediaPropertyPredicate(value: playlist, forProperty: MPMediaPlaylistPropertyName)
+        
+        query.addFilterPredicate(predicate)
+        
+        musicPlayer.setQueue(with: query)
+        musicPlayer.shuffleMode = .songs
+        //  let currentSong = MPMediaItemPropertyTitle
+        //  nowPlaying.text = currentSong
+        musicPlayer.play()
+        
+    }
+    
+    @IBOutlet weak var nowPlaying: UILabel!
     
     //MARK: - Music Source
     /***************************************************************/
@@ -181,7 +212,20 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         }
     }
     
-    //MARK: - Music Type
+    //    enum MusicSourceType {
+    //
+    //        switch source {
+    //
+    //        case LocalMusic :
+    //          self.setAudio = true
+    //
+    //        case Spotify :
+    //          self.setAudio = false
+    //
+    //        }
+    //    }
+    
+    //MARK: - Local Music Methods
     /***************************************************************/
     
     func localMusic(weather: Int) {
@@ -202,78 +246,50 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         }
     }
     
-//    func spotify(weather: Int) {
-//        
-//    }
-    
-    //MARK: - Location Manager Delegate Methods
+    //MARK: - Spotify Methods
     /***************************************************************/
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = locations[locations.count - 1]
         
-        if location.horizontalAccuracy > 0 {
-            locationManager.stopUpdatingLocation()
-            locationManager.delegate = nil
-            
-            //print("longitude = \(location.coordinate.longitude), latitude = \(location.coordinate.latitude)")
-            
-            let latitude = String(location.coordinate.latitude)
-            let longitude = String(location.coordinate.longitude)
-            
-            let params : [String : String] = ["lat" : latitude, "lon" : longitude, "appid" : APP_ID]
-            
-            // print(params)
-            
-            getWeatherData(url: WEATHER_URL, parameters: params)
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print(error)
-        cityLabel.text = "Location Unavailable"
-    }
-    
-    //MARK: - Spotify
-    /***************************************************************/
-    
-//    func callAlamoSpotify(url: String) {
-//        Alamofire.request(url).responseJSON(completionHandler: {
-//            response in
-//            
-//            self.parseSpotifyData(JSONData: response.data!)
-//        })
-//        
-//    }
-//    
-//    func parseSpotifyData(JSONData : Data) {
-//      
-//      do {
-//        let readableJSON = try JSONSerialization.jsonObject(with: JSONData, options: .mutableContainers) as! JSONStandard
-//        if let playlists = readableJSON["playlists"] as? JSONStandard {
-//          if let items = playlists["items"] {
-//            for i in 0..< items.count {
-//              let item = items[i] as! JSONStandard
-//                
-//              let name = item["name"] as! String
-//                
-//              names.append(name)
-//                
-//            }
-//          }
-//        }
-//        
-//      print(readableJSON as Any)
-//      
-//      }
-//      catch {
-//        print(error)
-//      }
-//    }
-//    
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return names.count
-//    }
+    //    func spotify(weather: Int) {
+    //
+    //    }
+
+    //    func callAlamoSpotify(url: String) {
+    //        Alamofire.request(url).responseJSON(completionHandler: {
+    //            response in
+    //
+    //            self.parseSpotifyData(JSONData: response.data!)
+    //        })
+    //
+    //    }
+    //
+    //    func parseSpotifyData(JSONData : Data) {
+    //
+    //      do {
+    //        let readableJSON = try JSONSerialization.jsonObject(with: JSONData, options: .mutableContainers) as! JSONStandard
+    //        if let playlists = readableJSON["playlists"] as? JSONStandard {
+    //          if let items = playlists["items"] {
+    //            for i in 0..< items.count {
+    //              let item = items[i] as! JSONStandard
+    //
+    //              let name = item["name"] as! String
+    //
+    //              names.append(name)
+    //
+    //            }
+    //          }
+    //        }
+    //
+    //      print(readableJSON as Any)
+    //
+    //      }
+    //      catch {
+    //        print(error)
+    //      }
+    //    }
+    //
+    //    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    //        return names.count
+    //    }
     
     //MARK: - Change City Delegate methods
     /***************************************************************/
@@ -298,16 +314,10 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     func didSetAudio(sourceType: Bool) {
         self.audioSource = sourceType
     }
-
-//    enum MusicSourceType {
-//        
-//        switch source {
-//        case LocalMusic :
-//          self.setAudio = true
-//        case Spotify :
-//          self.setAudio = false
-//        }
-//    }
+    
+    @IBAction func refreshWeather(_ sender: UIButton) {
+        viewDidLoad()
+    }
 
 }
 
