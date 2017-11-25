@@ -154,52 +154,6 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         }
     }
     
-    //MARK: - Music Controls
-    /***************************************************************/
-    
-    @IBAction func playButton(_ sender: UIButton){
-        self.playMusic(playlist: self.currentPlaylist)
-    }
-    
-    @IBAction func stopButton(_ sender: UIButton) {
-        musicPlayer.stop()
-    }
-    
-    @IBAction func backButton(_ sender: UIButton) {
-        
-        if audioSource == true {
-            print("Local")
-            musicPlayer.skipToPreviousItem()
-        }
-        else {
-            print("No Spotify yet..")
-            musicPlayer.skipToPreviousItem()
-        }
-        
-    }
-    
-    @IBAction func nextButton(_ sender: UIButton) {
-        musicPlayer.skipToNextItem()
-    }
-    
-    func playMusic(playlist: String) {
-        musicPlayer.stop()
-        
-        let query = MPMediaQuery()
-        let predicate = MPMediaPropertyPredicate(value: playlist, forProperty: MPMediaPlaylistPropertyName)
-        
-        query.addFilterPredicate(predicate)
-        
-        musicPlayer.setQueue(with: query)
-        musicPlayer.shuffleMode = .songs
-        //  let currentSong = MPMediaItemPropertyTitle
-        //  nowPlaying.text = currentSong
-        musicPlayer.play()
-        
-    }
-    
-    @IBOutlet weak var nowPlaying: UILabel!
-    
     //MARK: - Music Source
     /***************************************************************/
     
@@ -314,6 +268,55 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     func didSetAudio(sourceType: Bool) {
         self.audioSource = sourceType
     }
+    
+    //MARK: - Music Controls
+    /***************************************************************/
+    
+    @IBAction func playButton(_ sender: UIButton){
+        self.playMusic(playlist: self.currentPlaylist)
+    }
+    
+    @IBAction func stopButton(_ sender: UIButton) {
+        musicPlayer.stop()
+    }
+    
+    @IBAction func backButton(_ sender: UIButton) {
+        
+        if audioSource == true {
+            print("Local")
+            musicPlayer.skipToPreviousItem()
+        }
+        else {
+            print("No Spotify yet..")
+            musicPlayer.skipToPreviousItem()
+        }
+        
+    }
+    
+    @IBAction func nextButton(_ sender: UIButton) {
+        musicPlayer.skipToNextItem()
+    }
+    
+    func playMusic(playlist: String) {
+        musicPlayer.stop()
+        
+        let query = MPMediaQuery()
+        let predicate = MPMediaPropertyPredicate(value: playlist, forProperty: MPMediaPlaylistPropertyName)
+        
+        query.addFilterPredicate(predicate)
+        
+        musicPlayer.setQueue(with: query)
+        musicPlayer.shuffleMode = .songs
+        //  let currentSong = MPMediaItemPropertyTitle
+        //  nowPlaying.text = currentSong
+        musicPlayer.play()
+        
+    }
+    
+    @IBOutlet weak var nowPlaying: UILabel!
+    
+    //MARK: - Refresh Weather
+    /***************************************************************/
     
     @IBAction func refreshWeather(_ sender: UIButton) {
         viewDidLoad()
