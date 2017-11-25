@@ -72,6 +72,13 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     //        }
     //    }
     
+    //MARK: - Refresh Weather
+    /***************************************************************/
+    
+    @IBAction func refreshWeather(_ sender: UIButton) {
+        viewDidLoad()
+    }
+    
     //MARK: - Location Manager Delegate Methods
     /***************************************************************/
     
@@ -280,6 +287,10 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         musicPlayer.stop()
     }
     
+    @IBAction func nextButton(_ sender: UIButton) {
+        musicPlayer.skipToNextItem()
+    }
+    
     @IBAction func backButton(_ sender: UIButton) {
         
         if audioSource == true {
@@ -291,10 +302,6 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             musicPlayer.skipToPreviousItem()
         }
         
-    }
-    
-    @IBAction func nextButton(_ sender: UIButton) {
-        musicPlayer.skipToNextItem()
     }
     
     func playMusic(playlist: String) {
@@ -315,13 +322,6 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     
     @IBOutlet weak var nowPlaying: UILabel!
     
-    //MARK: - Refresh Weather
-    /***************************************************************/
-    
-    @IBAction func refreshWeather(_ sender: UIButton) {
-        viewDidLoad()
-    }
-
 }
 
 
