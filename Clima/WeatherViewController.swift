@@ -20,6 +20,17 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     let locationManager = CLLocationManager()
     let weatherDataModel = WeatherDataModel()
     
+    //MARK: - Date/Time Values
+    /***************************************************************/
+    
+    var hour: Int?
+    var minutes: Int?
+    var seconds: Int?
+    var day: Int?
+    var month: Int?
+    var year: Int?
+    var time = Timer()
+    
     //MARK: - Local Music Values
     /***************************************************************/
     
@@ -49,6 +60,9 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     locationManager.requestWhenInUseAuthorization()
     locationManager.startUpdatingLocation()
+    
+    time = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(WeatherViewController.dateAndTime), userInfo: nil, repeats: true)
+    
     //  callAlamoSpotify(url: spotifyURL)
     }
     
@@ -68,7 +82,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     //            else {
     //                  // Fallback on earlier versions
     //            }
-    //            
+    //
     //        }
     //    }
     
@@ -78,6 +92,44 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     @IBAction func refreshWeather(_ sender: UIButton) {
         viewDidLoad()
     }
+    
+    //MARK: - Date/Time
+    /***************************************************************/
+    
+    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var timeLabel: UILabel!
+    
+    func dateAndTime() {
+        
+    let time = DateFormatter()
+    let date =  DateFormatter()
+    
+    time.timeStyle = .medium
+    date.dateStyle = .full
+        
+    timeLabel.text = time.string(from: Date())
+    dateLabel.text = date.string(from: Date())
+        
+//    let dateTwo = Date()
+//    let calendar = Calendar.current
+        
+//    hour = calendar.component(.hour, from: date)
+//    minutes = calendar.component(.minute, from: date)
+//    seconds = calendar.component(.second, from: date)
+//  
+//    day = calendar.component(.day, from: date)
+//    month = calendar.component(.month, from: date)
+//    year = calendar.component(.year, from: date)
+//        
+//      let formatter = DateFormatter()
+//      formatter.dateStyle = .full
+//      formatter.timeStyle = .full
+        
+//    print("\nTime: \(hour ?? 0):\(minutes ?? 0)\n")
+//    print("Date: \(month ?? 0)/\(day ?? 0)/\(year ?? 0)\n")
+        
+    }
+    
     
     //MARK: - Location Manager Delegate Methods
     /***************************************************************/
@@ -149,10 +201,10 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         cityLabel.text = weatherDataModel.city
         temperatureLabel.text = "\(weatherDataModel.temperature)"
         weatherIcon.image = UIImage(named: weatherDataModel.weatherIconName)
-            
-        print("This is for \(weatherDataModel.city).")
+         
+        print("\nThis is for \(weatherDataModel.city).")
         //  musicType(weather: weatherType!)
-        
+        dateAndTime()
         musicSource()
      
         }
