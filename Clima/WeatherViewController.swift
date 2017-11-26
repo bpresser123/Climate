@@ -324,10 +324,6 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         }
     }
     
-    func didSetAudio(sourceType: Bool) {
-        self.audioSource = sourceType
-    }
-    
     //MARK: - Music Controls
     /***************************************************************/
     
@@ -373,6 +369,10 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     }
     
     @IBOutlet weak var nowPlaying: UILabel!
+    
+    func didSetAudio(sourceType: Bool) {
+        self.audioSource = sourceType
+    }
     
 }
 
