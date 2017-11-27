@@ -241,7 +241,7 @@
                                     <segment title="1"/>
                                 </segments>
                                 <connections>
-                                    <action selector="segValueChange:" destination="P1Y-dL-zMM" eventType="valueChanged" id="71Y-OU-A5v"/>
+                                    <action selector="segmentedValueChange:" destination="P1Y-dL-zMM" eventType="valueChanged" id="8tK-id-Evj"/>
                                 </connections>
                             </segmentedControl>
                         </subviews>
@@ -259,7 +259,6 @@
                     <navigationItem key="navigationItem" id="SGE-7i-E75"/>
                     <connections>
                         <outlet property="changeCityTextField" destination="0F0-ob-gbM" id="KuR-QC-r3p"/>
-                        <outlet property="seg" destination="Tee-a1-WYN" id="VbK-8Z-mGf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wa8-oH-wtf" userLabel="First Responder" sceneMemberID="firstResponder"/>

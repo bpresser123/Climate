@@ -34,33 +34,31 @@ class ChangeCityViewController: UIViewController {
     //MARK: - Music Source Switch
     /***************************************************************/
     
-    @IBOutlet weak var seg: UISegmentedControl!
-    
-    @IBAction func segValueChange(_ sender: Any) {
-        if seg.selectedSegmentIndex == 0 {
-          musicChangeDelegate?.didSetAudio(sourceType: true)
-          print("true")
+    @IBAction func segmentedValueChange(_ sender: UISegmentedControl) {
+        if sender.selectedSegmentIndex == 0 {
+            musicChangeDelegate?.didSetAudio(sourceType: true)
+            print("true")
         }
-        else if seg.selectedSegmentIndex == 1 {
-          musicChangeDelegate?.didSetAudio(sourceType: false)
-          print("false")
+        else if sender.selectedSegmentIndex == 1 {
+            musicChangeDelegate?.didSetAudio(sourceType: false)
+            print("false")
         }
+        
     }
+//        func selectedSegment(_: selectedIndex) {
+//            switch selectedIndex {
+//    
+//            case 0 :
+//                musicChangeDelegate?.didSetAudio(sourceType: true)
+//            case 1 :
+//                musicChangeDelegate?.didSetAudio(sourceType: false)
+//            }
     
-    //    func selectedSegment(_: selectedIndex) {
-    //        switch selectedIndex {
-    //
-    //        case 0 :
-    //            musicChangeDelegate?.didSetAudio(sourceType: true)
-    //        case 1 :
-    //            musicChangeDelegate?.didSetAudio(sourceType: false)
-    //        }
-    //
-    //        if selectedSegment().index == 0 {
-    //          musicChangeDelegate?.didSetAudio(sourceType: .LocalMusic)
-    //       }
-    //
-    //    }
+//            if selectedSegment().index == 0 {
+//              musicChangeDelegate?.didSetAudio(sourceType: .LocalMusic)
+           //}
+    
+       // }
     
     //    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     //        return names.count

@@ -38,7 +38,12 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     var currentPlaylist = ""
     var currentCity = ""
     var weatherType: Int?
-    var audioSource: Bool = true
+    var audioSource: Bool = true {
+        didSet {
+          musicSource()
+        }
+    
+    }
     //var musicSource: MusicSourceType = .LocalMusic
     
     //MARK: - Spotify Values
@@ -62,6 +67,8 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     locationManager.startUpdatingLocation()
     
     time = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(WeatherViewController.dateAndTime), userInfo: nil, repeats: true)
+        
+    
     
     //  callAlamoSpotify(url: spotifyURL)
     }
@@ -221,6 +228,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
           localMusic(weather: weatherType!)
         }
         else {
+          musicPlayer.stop()
           print("No Spotify yet..")
         }
     }
@@ -262,47 +270,48 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     //MARK: - Spotify Methods
     /***************************************************************/
         
-    //    func spotify(weather: Int) {
-    //
-    //    }
-
-    //    func callAlamoSpotify(url: String) {
-    //        Alamofire.request(url).responseJSON(completionHandler: {
-    //            response in
-    //
-    //            self.parseSpotifyData(JSONData: response.data!)
-    //        })
-    //
-    //    }
-    //
-    //    func parseSpotifyData(JSONData : Data) {
-    //
-    //      do {
-    //        let readableJSON = try JSONSerialization.jsonObject(with: JSONData, options: .mutableContainers) as! JSONStandard
-    //        if let playlists = readableJSON["playlists"] as? JSONStandard {
-    //          if let items = playlists["items"] {
-    //            for i in 0..< items.count {
-    //              let item = items[i] as! JSONStandard
-    //
-    //              let name = item["name"] as! String
-    //
-    //              names.append(name)
-    //
-    //            }
-    //          }
-    //        }
-    //
-    //      print(readableJSON as Any)
-    //
-    //      }
-    //      catch {
-    //        print(error)
-    //      }
-    //    }
-    //
-    //    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    //        return names.count
-    //    }
+//        func spotify(weather: Int) {
+//    
+//          callAlamoSpotify(url: SpotifyURL)
+//        }
+//
+//        func callAlamoSpotify(url: String) {
+//            Alamofire.request(url).responseJSON(completionHandler: {
+//                response in
+//    
+//                self.parseSpotifyData(JSONData: response.data!)
+//            })
+//    
+//        }
+//    
+//        func parseSpotifyData(JSONData : Data) {
+//    
+//          do {
+//            let readableJSON = try JSONSerialization.jsonObject(with: JSONData, options: .mutableContainers) as! JSONStandard
+//            if let playlists = readableJSON["playlists"] as? JSONStandard {
+//              if let items = playlists["items"] {
+//                for i in 0..< items.count {
+//                  let item = items[i] as! JSONStandard
+//    
+//                  let name = item["name"] as! String
+//    
+//                  names.append(name)
+//    
+//                }
+//              }
+//            }
+//    
+//          print(readableJSON as Any)
+//    
+//          }
+//          catch {
+//            print(error)
+//          }
+//        }
+//    
+//        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//            return names.count
+//        }
     
     //MARK: - Change City Delegate methods
     /***************************************************************/
@@ -321,6 +330,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             let destinationVC = segue.destination as! ChangeCityViewController
             
             destinationVC.delegate = self
+            destinationVC.musicChangeDelegate = self
         }
     }
     
@@ -328,26 +338,48 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     /***************************************************************/
     
     @IBAction func playButton(_ sender: UIButton){
-        self.playMusic(playlist: self.currentPlaylist)
+        
+        musicPlayer.stop()
+        if audioSource == true {
+            print("Local Music")
+            self.playMusic(playlist: self.currentPlaylist)
+        }
+        else {
+            print("No Spotify yet..")
+        }
     }
     
     @IBAction func stopButton(_ sender: UIButton) {
         musicPlayer.stop()
+        if audioSource == true {
+            print("Local Music")
+            musicPlayer.stop()
+        }
+        else {
+            print("No Spotify yet..")
+        }
+        
     }
     
     @IBAction func nextButton(_ sender: UIButton) {
-        musicPlayer.skipToNextItem()
+        
+        if audioSource == true {
+            print("Local Music")
+            musicPlayer.skipToNextItem()
+        }
+        else {
+            print("No Spotify yet..")
+        }
     }
     
     @IBAction func backButton(_ sender: UIButton) {
         
         if audioSource == true {
-            print("Local")
+            print("Local Music")
             musicPlayer.skipToPreviousItem()
         }
         else {
             print("No Spotify yet..")
-            musicPlayer.skipToPreviousItem()
         }
         
     }
