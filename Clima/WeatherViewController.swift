@@ -209,7 +209,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         temperatureLabel.text = "\(weatherDataModel.temperature)"
         weatherIcon.image = UIImage(named: weatherDataModel.weatherIconName)
          
-        print("\nThis is for \(weatherDataModel.city).")
+        print("\nThis weather data is for \(weatherDataModel.city).")
         //  musicType(weather: weatherType!)
         dateAndTime()
         musicSource()
@@ -229,7 +229,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         }
         else {
           musicPlayer.stop()
-          print("No Spotify yet..")
+          print("Spotify is unavailable..")
         }
     }
     
@@ -345,7 +345,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             self.playMusic(playlist: self.currentPlaylist)
         }
         else {
-            print("No Spotify yet..")
+            print("Spotify is unavailable..")
         }
     }
     
@@ -356,7 +356,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             musicPlayer.stop()
         }
         else {
-            print("No Spotify yet..")
+            print("Spotify is unavailable..")
         }
         
     }
@@ -368,7 +368,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             musicPlayer.skipToNextItem()
         }
         else {
-            print("No Spotify yet..")
+            print("Spotify is unavailable..")
         }
     }
     
@@ -379,7 +379,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             musicPlayer.skipToPreviousItem()
         }
         else {
-            print("No Spotify yet..")
+            print("Spotify is unavailable..")
         }
         
     }
