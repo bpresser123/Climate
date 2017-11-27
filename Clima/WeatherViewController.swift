@@ -73,7 +73,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     //  callAlamoSpotify(url: spotifyURL)
     }
     
-    //MARK: - Privacy
+    //MARK: - Privacy/Preferences
     /***************************************************************/
     
     //    func Auth(pass: Int) {
@@ -92,6 +92,12 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     //
     //        }
     //    }
+        
+    //          let valuetoSave: String?
+    //            
+    //          NSString *valueToSave = @"true";
+    //          [[NSUserDefaults standardUserDefaults] setObject:valueToSave forKey:@"user"];
+    //          [[NSUserDefaults standardUserDefaults] synchronize];
     
     //MARK: - Refresh Weather
     /***************************************************************/
@@ -201,7 +207,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         weatherDataModel.temperature = Int(1.8 * Double(tempResult - 273)) + 32
         weatherDataModel.city = json["name"].stringValue
         currentCity = json["name"].stringValue
-        weatherDataModel.condition = 800 //json["weather"][0]["id"].intValue
+        weatherDataModel.condition = json["weather"][0]["id"].intValue
         weatherType = weatherDataModel.condition
         weatherDataModel.weatherIconName = weatherDataModel.updateWeatherIcon(condition: weatherDataModel.condition)
             
@@ -253,14 +259,22 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         
         switch (weather) {
         
-        case 0...300 :
+        case 0...600, 772...799, 900...903, 905...1000 :
             currentPlaylist = "Rainy"
             playMusic(playlist: self.currentPlaylist)
             
-        case 700...800 :
+        case 800, 904 :
             currentPlaylist = "Sunny"
             playMusic(playlist: self.currentPlaylist)
         
+        case 601...700, 903 :
+            currentPlaylist = "Snowy"
+            playMusic(playlist: self.currentPlaylist)
+        
+        case 701...771, 801...804 :
+            currentPlaylist = "Cloudy"
+            playMusic(playlist: self.currentPlaylist)
+            
         default :
             print("musicType fail")
             
