@@ -64,6 +64,17 @@
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7fn-VR-fPq">
+                                        <rect key="frame" x="8" y="-1" width="178" height="37"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </view>
+                                    <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="zhd-0B-eTQ">
+                                        <rect key="frame" x="20" y="44" width="168" height="31"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <connections>
+                                            <action selector="songTimeSlider:" destination="vXZ-lx-hvc" eventType="valueChanged" id="QsQ-ZE-knC"/>
+                                        </connections>
+                                    </slider>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="AT7-It-Fyf" secondAttribute="trailing" constant="16" id="Qgd-vM-Gci"/>
@@ -143,6 +154,17 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qMy-PW-EJE">
+                                <rect key="frame" x="217" y="42" width="65" height="34"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Spotify">
+                                    <color key="titleColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="loginBtnPressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="dWi-4o-eZS"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -158,7 +180,10 @@
                     <connections>
                         <outlet property="cityLabel" destination="Ssc-Cu-XmK" id="SQd-ZM-AMh"/>
                         <outlet property="dateLabel" destination="SEU-k1-gj2" id="gjf-Ex-grZ"/>
+                        <outlet property="mpVolumeViewParentView" destination="7fn-VR-fPq" id="JcB-d7-IPV"/>
                         <outlet property="nowPlaying" destination="5pF-mJ-k1Y" id="ASU-8D-PO9"/>
+                        <outlet property="slider" destination="zhd-0B-eTQ" id="jRT-FH-Ef1"/>
+                        <outlet property="spotifyLoginBtn" destination="qMy-PW-EJE" id="8hL-Lu-upi"/>
                         <outlet property="temperatureLabel" destination="AT7-It-Fyf" id="Pgr-EG-xEY"/>
                         <outlet property="timeLabel" destination="2D5-87-g5F" id="aGL-kl-8xY"/>
                         <outlet property="weatherIcon" destination="C11-fU-d6q" id="LCY-gG-nRJ"/>
@@ -259,6 +284,7 @@
                     <navigationItem key="navigationItem" id="SGE-7i-E75"/>
                     <connections>
                         <outlet property="changeCityTextField" destination="0F0-ob-gbM" id="KuR-QC-r3p"/>
+                        <outlet property="segSwitch" destination="Tee-a1-WYN" id="w4o-Du-JwD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wa8-oH-wtf" userLabel="First Responder" sceneMemberID="firstResponder"/>

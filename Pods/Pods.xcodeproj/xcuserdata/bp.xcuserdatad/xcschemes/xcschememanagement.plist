@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Hex.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-Climate.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -27,12 +32,17 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>3FE9E20CB64F539EF7F876C8F10343D6</key>
+		<key>22B128A84F6A1D8B0847B2640C042B93</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>48A2A580697DA7C737ED95CDFA201FE4</key>
+		<key>5E5153A3686A45284D403241B963DF8B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6AAC63B7D1C48D98453F38CF76EF4319</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -42,7 +52,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A9ECA450F59D3A322FDC4CCB7A91CF05</key>
+		<key>E4D06EDD87FE480CBAD30E498E441006</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -6,7 +6,7 @@ import SwiftyJSON
 import MediaPlayer
 
 
-class WeatherViewController: UIViewController, CLLocationManagerDelegate, ChangeCityDelegate, ChangeMusicDelegate {
+class WeatherViewController: UIViewController, CLLocationManagerDelegate, ChangeCityDelegate, ChangeMusicDelegate, SPTAudioStreamingPlaybackDelegate, SPTAudioStreamingDelegate {
     
     //MARK: - Weather Outlets/Values
     /***************************************************************/
@@ -30,6 +30,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     var month: Int?
     var year: Int?
     var time = Timer()
+    var sliderTime = Timer()
     
     //MARK: - Local Music Values
     /***************************************************************/
@@ -42,8 +43,8 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         didSet {
           musicSource()
         }
-    
     }
+    
     //var musicSource: MusicSourceType = .LocalMusic
     
     //MARK: - Spotify Values
@@ -54,6 +55,11 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     
     typealias JSONStandard = [String : AnyObject]
     var names = [String]()
+    
+    var auth = SPTAuth.defaultInstance()!
+    var session:SPTSession!
+    var player: SPTAudioStreamingController?
+    var loginUrl: URL?
  
     //MARK: - viewDidLoad
     /***************************************************************/
@@ -68,36 +74,104 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     
     time = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(WeatherViewController.dateAndTime), userInfo: nil, repeats: true)
         
+    sliderTime = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(WeatherViewController.updateSlider), userInfo: nil, repeats: true)
+
+    UIApplication.shared.beginReceivingRemoteControlEvents()
+        
+    let myVolumeView = MPVolumeView(frame: mpVolumeViewParentView.bounds)
+    mpVolumeViewParentView.backgroundColor = UIColor.clear
+    mpVolumeViewParentView.addSubview(myVolumeView)
+        
+    setup()
+    NotificationCenter.default.addObserver(self, selector: #selector(WeatherViewController.updateAfterFirstLogin), name: NSNotification.Name(rawValue: "loginSuccessfull"), object: nil)
     
-    
-    //  callAlamoSpotify(url: spotifyURL)
+    //slider.maximumValue = Float(musicPlayer.duration)
+    //callAlamoSpotify(url: spotifyURL)
     }
+    
+    //MARK: - Spotify Login
+    /***************************************************************/
+    
+    func updateAfterFirstLogin () {
+        
+        spotifyLoginBtn.isHidden = true
+        let userDefaults = UserDefaults.standard
+        
+        if let sessionObj:AnyObject = userDefaults.object(forKey: "SpotifySession") as AnyObject? {
+            
+            let sessionDataObj = sessionObj as! Data
+            let firstTimeSession = NSKeyedUnarchiver.unarchiveObject(with: sessionDataObj) as! SPTSession
+            
+            self.session = firstTimeSession
+            initializaPlayer(authSession: session)
+            self.spotifyLoginBtn.isHidden = true
+            // self.loadingLabel.isHidden = false
+          }
+        
+        }
+    
+    func initializaPlayer(authSession:SPTSession){
+        if self.player == nil {
+            
+            self.player = SPTAudioStreamingController.sharedInstance()
+            self.player!.playbackDelegate = self as SPTAudioStreamingPlaybackDelegate
+            self.player!.delegate = self as SPTAudioStreamingDelegate
+            try! player?.start(withClientId: auth.clientID)
+            self.player!.login(withAccessToken: authSession.accessToken)
+            
+        }
+        
+    }
+    
+    func setup() {
+        SPTAuth.defaultInstance().clientID = "5f52d115f7254baeafb00380ddc51703"
+        SPTAuth.defaultInstance().redirectURL = URL(string: "Climate://returnAfterLogin")
+        SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPrivateScope]
+        loginUrl = SPTAuth.defaultInstance().spotifyAppAuthenticationURL()
+        
+    }
+        
+    func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
+        // after a user authenticates a session, the SPTAudioStreamingController is then initialized and this method called
+        print("logged in")
+        self.player?.playSpotifyURI("spotify:track:7Cg3F9ZsZ2TYUnlza49NYh", startingWith: 0, startingWithPosition: 0, callback: { (error) in
+            if (error != nil) {
+                print("playing!")
+            }
+        })
+    }
+
+    @IBOutlet weak var spotifyLoginBtn: UIButton!
+    
+    @IBAction func loginBtnPressed(_ sender: Any) {
+        if UIApplication.shared.openURL(loginUrl!) {
+            if auth.canHandle(auth.redirectURL) {
+                // To do - build in error handling
+            }
+        }
+    }
+    
     
     //MARK: - Privacy/Preferences
     /***************************************************************/
     
-    //    func Auth(pass: Int) {
-    //
-    //        if #available(iOS 9.3, *) {
-    //            MPMediaLibrary.requestAuthorization { (status) in
-    //
-    //            if status == .authorized {
-    //
-    //                musicType(weather: pass)
-    //            }
-    //
-    //            else {
-    //                  // Fallback on earlier versions
-    //            }
-    //
-    //        }
-    //    }
-        
-    //          let valuetoSave: String?
-    //            
-    //          NSString *valueToSave = @"true";
-    //          [[NSUserDefaults standardUserDefaults] setObject:valueToSave forKey:@"user"];
-    //          [[NSUserDefaults standardUserDefaults] synchronize];
+//        func Auth(pass: Int) {
+//    
+//            if #available(iOS 9.3, *) {
+//                MPMediaLibrary.requestAuthorization { (status) in
+//    
+//                if status == .authorized {
+//                    self.musicSource()
+//                }
+//    
+//                else {
+//                    self.musicPlayer.stop()
+//                }
+//              }
+//    
+//          }
+//        }
+
     
     //MARK: - Refresh Weather
     /***************************************************************/
@@ -284,27 +358,33 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     //MARK: - Spotify Methods
     /***************************************************************/
         
-//        func spotify(weather: Int) {
-//    
-//          callAlamoSpotify(url: SpotifyURL)
-//        }
-//
-//        func callAlamoSpotify(url: String) {
+        func spotify(weather: Int) {
+    
+          //callAlamoSpotify(url: SpotifyURL)
+        }
+
+        func callAlamoSpotify(url: String) {
+            
+            Alamofire.request(url, method: .get, parameters: nil, headers: ["Authorization": "BQDiJBlf9dmU0n5nwmizx0AJ0JR_q-yFJQw7HjUc12kFBlGDJt1sOqNh6vrZ7BJfo2gzCgqghJgZa8KYqXxjNfFH3mdsbRer3_NzAKMHOI4QEHPHBQakOjWkbJ3wz9kt1hKUe1UjTZH6tDazb23-cYCS"]).response { (response) in
+               self.parseSpotifyData(JSONData: response.data!)
+            }
 //            Alamofire.request(url).responseJSON(completionHandler: {
 //                response in
 //    
 //                self.parseSpotifyData(JSONData: response.data!)
 //            })
-//    
-//        }
-//    
-//        func parseSpotifyData(JSONData : Data) {
-//    
-//          do {
-//            let readableJSON = try JSONSerialization.jsonObject(with: JSONData, options: .mutableContainers) as! JSONStandard
+    
+        }
+    
+        func parseSpotifyData(JSONData : Data) {
+    
+          do {
+            let readableJSON = try JSONSerialization.jsonObject(with: JSONData, options: .mutableContainers) as! JSONStandard
 //            if let playlists = readableJSON["playlists"] as? JSONStandard {
-//              if let items = playlists["items"] {
+//                
+//              if let items = playlists["items"] as? Array {
 //                for i in 0..< items.count {
+//                    
 //                  let item = items[i] as! JSONStandard
 //    
 //                  let name = item["name"] as! String
@@ -314,18 +394,18 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
 //                }
 //              }
 //            }
-//    
-//          print(readableJSON as Any)
-//    
-//          }
-//          catch {
-//            print(error)
-//          }
-//        }
-//    
-//        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//            return names.count
-//        }
+    
+          print(readableJSON as Any)
+    
+          }
+          catch {
+            print(error)
+          }
+        }
+    
+        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            return names.count
+        }
     
     //MARK: - Change City Delegate methods
     /***************************************************************/
@@ -408,11 +488,30 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         
         musicPlayer.setQueue(with: query)
         musicPlayer.shuffleMode = .songs
-        //  let currentSong = MPMediaItemPropertyTitle
-        //  nowPlaying.text = currentSong
+    
+        musicPlayer.play()
+        //nowPlaying.text = String(describing: self.musicPlayer.nowPlayingItem)
+        print(nowPlaying.text!)
+        
+    }
+    
+    
+    @IBOutlet weak var slider: UISlider!
+    
+    @IBAction func songTimeSlider(_ sender: Any) {
+        
+        musicPlayer.stop()
+        musicPlayer.currentPlaybackTime = TimeInterval(slider.value)
+        musicPlayer.prepareToPlay()
         musicPlayer.play()
         
     }
+    
+    func updateSlider() {
+      slider.value = Float(musicPlayer.currentPlaybackTime)
+    }
+   
+    @IBOutlet weak var mpVolumeViewParentView: UIView!
     
     @IBOutlet weak var nowPlaying: UILabel!
     

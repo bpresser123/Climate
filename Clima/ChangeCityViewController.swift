@@ -11,6 +11,20 @@ protocol ChangeMusicDelegate {
 
 class ChangeCityViewController: UIViewController {
     
+    let defaults:UserDefaults = UserDefaults.standard
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        if let value = UserDefaults.standard.value(forKey: "segOnOff") {
+            
+            let selectedIndex = value as! Int
+            segSwitch.selectedSegmentIndex = selectedIndex
+            
+          }
+        
+        }
+    
     //MARK: - Delegates
     /***************************************************************/
 
@@ -33,15 +47,20 @@ class ChangeCityViewController: UIViewController {
         
     //MARK: - Music Source Switch
     /***************************************************************/
+    @IBOutlet weak var segSwitch: UISegmentedControl!
     
     @IBAction func segmentedValueChange(_ sender: UISegmentedControl) {
+        
         if sender.selectedSegmentIndex == 0 {
             musicChangeDelegate?.didSetAudio(sourceType: true)
             print("true")
+            UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: "segOnOff")
         }
+            
         else if sender.selectedSegmentIndex == 1 {
             musicChangeDelegate?.didSetAudio(sourceType: false)
             print("false")
+            UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: "segOnOff")
         }
         
     }
