@@ -4,6 +4,8 @@ import CoreLocation
 import Alamofire
 import SwiftyJSON
 import MediaPlayer
+import AVFoundation
+import SafariServices
 
 
 class WeatherViewController: UIViewController, CLLocationManagerDelegate, ChangeCityDelegate, ChangeMusicDelegate, SPTAudioStreamingPlaybackDelegate, SPTAudioStreamingDelegate {
@@ -87,10 +89,43 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     
     //slider.maximumValue = Float(musicPlayer.duration)
     //callAlamoSpotify(url: spotifyURL)
+        
     }
     
     //MARK: - Spotify Login
     /***************************************************************/
+    
+//    func setup() {
+//        SPTAuth.defaultInstance().clientID = "5f52d115f7254baeafb00380ddc51703"
+//        SPTAuth.defaultInstance().redirectURL = URL(string: "Climate://returnAfterLogin")
+//        SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPrivateScope]
+//        loginUrl = SPTAuth.defaultInstance().spotifyAppAuthenticationURL()
+//        
+//    }
+//    
+    func setup () {
+        // insert redirect your url and client ID below
+        let redirectURL = "Climate://returnAfterLogin" // put your redirect URL here
+        let clientID = "5f52d115f7254baeafb00380ddc51703" // put your client ID here
+        auth.redirectURL     = URL(string: redirectURL)
+        auth.clientID        = "5f52d115f7254baeafb00380ddc51703"
+        auth.requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPrivateScope]
+        loginUrl = auth.spotifyWebAuthenticationURL()
+        
+    }
+    
+    func initializaPlayer(authSession:SPTSession){
+        if player == nil {
+            
+            player = SPTAudioStreamingController.sharedInstance()
+            player!.playbackDelegate = self
+            player!.delegate = self
+            try! player!.start(withClientId: auth.clientID)
+            player!.login(withAccessToken: authSession.accessToken)
+            
+        }
+        
+    }
     
     func updateAfterFirstLogin () {
         
@@ -109,36 +144,43 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
           }
         
         }
-    
-    func initializaPlayer(authSession:SPTSession){
-        if self.player == nil {
-            
-            self.player = SPTAudioStreamingController.sharedInstance()
-            self.player!.playbackDelegate = self as SPTAudioStreamingPlaybackDelegate
-            self.player!.delegate = self as SPTAudioStreamingDelegate
-            try! player?.start(withClientId: auth.clientID)
-            self.player!.login(withAccessToken: authSession.accessToken)
-            
-        }
-        
-    }
-    
-    func setup() {
-        SPTAuth.defaultInstance().clientID = "5f52d115f7254baeafb00380ddc51703"
-        SPTAuth.defaultInstance().redirectURL = URL(string: "Climate://returnAfterLogin")
-        SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPrivateScope]
-        loginUrl = SPTAuth.defaultInstance().spotifyAppAuthenticationURL()
-        
-    }
         
     func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
         // after a user authenticates a session, the SPTAudioStreamingController is then initialized and this method called
-        print("logged in")
-        self.player?.playSpotifyURI("spotify:track:7Cg3F9ZsZ2TYUnlza49NYh", startingWith: 0, startingWithPosition: 0, callback: { (error) in
-            if (error != nil) {
+    
+        
+//        player?.skipNext({ (error) in
+//            if error != nil {
+//                error?.localizedDescription
+//            }
+//        })
+        
+//        player?.setIsPlaying(<#T##playing: Bool##Bool#>, callback: <#T##SPTErrorableOperationCallback!##SPTErrorableOperationCallback!##(Error?) -> Void#>)
+        
+        audioStreaming.playSpotifyURI("spotify:track:7Cg3F9ZsZ2TYUnlza49NYh", startingWith: 0, startingWithPosition: 0, callback: { error in
+            if (error == nil) {
                 print("playing!")
             }
+          
+         
+        
         })
+   
+    }
+    
+    func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStartPlayingTrack trackUri: String!) {
+        
+    }
+    
+    func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
+        print("isPlaying: \(isPlaying)")
+        if (isPlaying) {
+            try! AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try! AVAudioSession.sharedInstance().setActive(true)
+        } else {
+            try! AVAudioSession.sharedInstance().setActive(false)
+        }
+        
     }
 
     @IBOutlet weak var spotifyLoginBtn: UIButton!
