@@ -95,20 +95,12 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     //MARK: - Spotify Login
     /***************************************************************/
     
-//    func setup() {
-//        SPTAuth.defaultInstance().clientID = "5f52d115f7254baeafb00380ddc51703"
-//        SPTAuth.defaultInstance().redirectURL = URL(string: "Climate://returnAfterLogin")
-//        SPTAuth.defaultInstance().requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPrivateScope]
-//        loginUrl = SPTAuth.defaultInstance().spotifyAppAuthenticationURL()
-//        
-//    }
-//    
     func setup () {
         // insert redirect your url and client ID below
         let redirectURL = "Climate://returnAfterLogin" // put your redirect URL here
         let clientID = "5f52d115f7254baeafb00380ddc51703" // put your client ID here
-        auth.redirectURL     = URL(string: redirectURL)
-        auth.clientID        = "5f52d115f7254baeafb00380ddc51703"
+        auth.redirectURL = URL(string: redirectURL)
+        auth.clientID = "5f52d115f7254baeafb00380ddc51703"
         auth.requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPrivateScope]
         loginUrl = auth.spotifyWebAuthenticationURL()
         
@@ -146,23 +138,11 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         }
         
     func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
-        // after a user authenticates a session, the SPTAudioStreamingController is then initialized and this method called
-    
-        
-//        player?.skipNext({ (error) in
-//            if error != nil {
-//                error?.localizedDescription
-//            }
-//        })
-        
-//        player?.setIsPlaying(<#T##playing: Bool##Bool#>, callback: <#T##SPTErrorableOperationCallback!##SPTErrorableOperationCallback!##(Error?) -> Void#>)
-        
-        audioStreaming.playSpotifyURI("spotify:track:7Cg3F9ZsZ2TYUnlza49NYh", startingWith: 0, startingWithPosition: 0, callback: { error in
+
+        audioStreaming.playSpotifyURI("", startingWith: 0, startingWithPosition: 0, callback: { error in
             if (error == nil) {
                 print("playing!")
             }
-          
-         
         
         })
    
@@ -313,7 +293,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         
     }
     
-    //MARK: - JSON Parsing
+    //MARK: - Weather JSON Parsing
     /***************************************************************/
 
     func updateWeatherData (json: JSON) {
@@ -349,9 +329,10 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         if audioSource == true {
           localMusic(weather: weatherType!)
         }
-        else {
+        else if audioSource == false {
           musicPlayer.stop()
-          print("Spotify is unavailable..")
+          spotifyStart(weather: weatherType!)
+          print("Spotify..")
         }
     }
     
@@ -392,36 +373,80 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             playMusic(playlist: self.currentPlaylist)
             
         default :
-            print("musicType fail")
+            print("Local Music Fail")
             
         }
     }
     
     //MARK: - Spotify Methods
     /***************************************************************/
-        
-        func spotify(weather: Int) {
     
-          //callAlamoSpotify(url: SpotifyURL)
+    func spotifyStart(weather: Int) {
+        
+        switch (weather) {
+            
+            case 0...600, 772...799, 900...903, 905...1000 :
+                currentPlaylist = "Rainy"
+                player?.playSpotifyURI("spotify:user:1220300788:playlist:1R6PqPgAke0uFdgg5MAPjV", startingWith: 0, startingWithPosition: 0, callback: { error in
+                    if (error == nil) {
+                        print("playing!")
+                    }
+                    
+                })
+            
+            
+            case 800, 904 :
+                currentPlaylist = "Sunny"
+                player?.playSpotifyURI("spotify:user:1220300788:playlist:1Mty4xNtNK7EtLOzML2EKz", startingWith: 0, startingWithPosition: 0, callback: { error in
+                    if (error == nil) {
+                        print("playing!")
+                    }
+                    
+                })
+                
+            case 601...700, 903 :
+                currentPlaylist = "Snowy"
+                player?.playSpotifyURI("spotify:user:1220300788:playlist:50uDcKIQn7rIV9tPr4UvlJ", startingWith: 0, startingWithPosition: 0, callback: { error in
+                    if (error == nil) {
+                        print("playing!")
+                    }
+                    
+                })
+                
+            case 701...771, 801...804 :
+                currentPlaylist = "Cloudy"
+                player?.playSpotifyURI("spotify:user:1220300788:playlist:6p52ug2zJ1MQgYqcaQJ7oX", startingWith: 0, startingWithPosition: 0, callback: { error in
+                    if (error == nil) {
+                        print("playing!")
+                    }
+                    
+                })
+                
+            default :
+                print("Spotify Fail")
+                
+            }
+    
         }
 
-        func callAlamoSpotify(url: String) {
-            
-            Alamofire.request(url, method: .get, parameters: nil, headers: ["Authorization": "BQDiJBlf9dmU0n5nwmizx0AJ0JR_q-yFJQw7HjUc12kFBlGDJt1sOqNh6vrZ7BJfo2gzCgqghJgZa8KYqXxjNfFH3mdsbRer3_NzAKMHOI4QEHPHBQakOjWkbJ3wz9kt1hKUe1UjTZH6tDazb23-cYCS"]).response { (response) in
-               self.parseSpotifyData(JSONData: response.data!)
-            }
+
+//        func callAlamoSpotify(url: String) {
+//            
+//            Alamofire.request(url, method: .get, parameters: nil, headers: ["Authorization": "BQDiJBlf9dmU0n5nwmizx0AJ0JR_q-yFJQw7HjUc12kFBlGDJt1sOqNh6vrZ7BJfo2gzCgqghJgZa8KYqXxjNfFH3mdsbRer3_NzAKMHOI4QEHPHBQakOjWkbJ3wz9kt1hKUe1UjTZH6tDazb23-cYCS"]).response { (response) in
+//               self.parseSpotifyData(JSONData: response.data!)
+//            }
 //            Alamofire.request(url).responseJSON(completionHandler: {
 //                response in
 //    
 //                self.parseSpotifyData(JSONData: response.data!)
 //            })
+//
+//        }
     
-        }
-    
-        func parseSpotifyData(JSONData : Data) {
-    
-          do {
-            let readableJSON = try JSONSerialization.jsonObject(with: JSONData, options: .mutableContainers) as! JSONStandard
+//        func parseSpotifyData(JSONData : Data) {
+//    
+//          do {
+//            let readableJSON = try JSONSerialization.jsonObject(with: JSONData, options: .mutableContainers) as! JSONStandard
 //            if let playlists = readableJSON["playlists"] as? JSONStandard {
 //                
 //              if let items = playlists["items"] as? Array {
@@ -436,18 +461,18 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
 //                }
 //              }
 //            }
-    
-          print(readableJSON as Any)
-    
-          }
-          catch {
-            print(error)
-          }
-        }
-    
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return names.count
-        }
+//    
+//          print(readableJSON as Any)
+//    
+//          }
+//          catch {
+//            print(error)
+//          }
+//        }
+//    
+//        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//            return names.count
+//        }
     
     //MARK: - Change City Delegate methods
     /***************************************************************/
@@ -481,7 +506,13 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             self.playMusic(playlist: self.currentPlaylist)
         }
         else {
-            print("Spotify is unavailable..")
+            player?.setIsPlaying(true, callback: { error in
+                if (error == nil) {
+                print("playing!")
+                }
+                
+                })
+            print("Spotify")
         }
     }
     
@@ -492,6 +523,12 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             musicPlayer.stop()
         }
         else {
+            player?.setIsPlaying(false, callback: { error in
+                if (error == nil) {
+                    print("playing!")
+                }
+                
+            })
             print("Spotify is unavailable..")
         }
         
@@ -504,7 +541,12 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             musicPlayer.skipToNextItem()
         }
         else {
-            print("Spotify is unavailable..")
+            player?.skipNext({ (error) in
+                if error != nil {
+                    error?.localizedDescription
+                }
+            })
+            print("Spotify")
         }
     }
     
@@ -515,7 +557,13 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             musicPlayer.skipToPreviousItem()
         }
         else {
-            print("Spotify is unavailable..")
+            player?.skipPrevious({ (error) in
+                if error != nil {
+                    error?.localizedDescription
+                }
+            })
+
+            print("Spotify")
         }
         
     }
