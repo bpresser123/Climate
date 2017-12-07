@@ -64,37 +64,6 @@ class ChangeCityViewController: UIViewController {
         }
         
     }
-//        func selectedSegment(_: selectedIndex) {
-//            switch selectedIndex {
-//    
-//            case 0 :
-//                musicChangeDelegate?.didSetAudio(sourceType: true)
-//            case 1 :
-//                musicChangeDelegate?.didSetAudio(sourceType: false)
-//            }
-    
-//            if selectedSegment().index == 0 {
-//              musicChangeDelegate?.didSetAudio(sourceType: .LocalMusic)
-           //}
-    
-       // }
-    
-    //    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    //        return names.count
-    //    }
-    //
-    //    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    //      let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")
-    //
-    //      cell?.textLabel?.text = names[indexPath.row]
-    //
-    //      return cell!
-    //    }
-    
-    //MARK: - Table View
-    /***************************************************************/
-    
-    //  @IBOutlet weak var playlistView: UITableView!
     
     //MARK: - Back Buttons
     /***************************************************************/
