@@ -179,6 +179,20 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             self.nowPlaying.setNeedsDisplay()
             
             print(trackName)
+            
+        }
+            
+        if let art = audioStreaming.metadata.currentTrack?.albumCoverArtURL {
+            
+            let url = URL(string: art)
+            let data = try? Data(contentsOf: url!)
+            let image: UIImage = UIImage(data: data!)!
+            
+            self.albumArtwork.image = image
+            
+            self.view.setNeedsDisplay()
+            self.nowPlaying.setNeedsDisplay()
+            
         }
       }
     }
@@ -605,6 +619,9 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         
         var currentItem = self.musicPlayer.nowPlayingItem;
         nowPlaying.text = currentItem?.value(forProperty: MPMediaItemPropertyArtist) as? String
+        
+        let size = CGSize(width: 100, height: 100)
+        albumArtwork.image = currentItem?.artwork?.image(at: size)
         print(nowPlaying.text!)
         
 //        var albumImage = self.musicPlayer.nowPlayingItem;
