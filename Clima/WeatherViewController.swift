@@ -68,7 +68,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+
     locationManager.delegate = self
     locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     locationManager.requestWhenInUseAuthorization()
@@ -82,6 +82,17 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         
     setup()
     NotificationCenter.default.addObserver(self, selector: #selector(WeatherViewController.updateAfterFirstLogin), name: NSNotification.Name(rawValue: "loginSuccessfull"), object: nil)
+        
+        
+//    UIView.animate(withDuration: 12.0, delay: 1, options: ([.curveLinear, .repeat]), animations: {() -> Void in
+//      self.nowPlaying.center = CGPoint(x: 0 - self.nowPlaying.bounds.size.width / 2, y: self.nowPlaying.center.y)
+//    }, completion:  { _ in })
+//
+//    UIView.animate(withDuration: 12.0, delay: 1, options: ([.curveLinear, .repeat]), animations: {() -> Void in
+//      self.spotifyLabel.center = CGPoint(x: 0 - self.spotifyLabel.bounds.size.width / 2, y: self.spotifyLabel.center.y)
+//    }, completion:  { _ in })
+        
+        
         
 //    sliderTime = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(WeatherViewController.updateSlider), userInfo: nil, repeats: true)
 //    slider.maximumValue = Float(musicPlayer.duration)
@@ -146,7 +157,6 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
         print("isPlaying: \(isPlaying)")
-        print(player)
         if (isPlaying) {
             try! AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
             try! AVAudioSession.sharedInstance().setActive(true)
@@ -154,6 +164,23 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             try! AVAudioSession.sharedInstance().setActive(false)
         }
         
+    }
+    
+    func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didChange metadata: SPTPlaybackMetadata!) {
+        print("Spotify Meta Data Changed")
+        
+        DispatchQueue.main.async() {
+        
+        if let trackName = audioStreaming.metadata.currentTrack?.artistName {
+            
+            self.spotifyLabel.text = trackName
+    
+            self.view.setNeedsDisplay()
+            self.nowPlaying.setNeedsDisplay()
+            
+            print(trackName)
+        }
+      }
     }
 
     @IBOutlet weak var spotifyLoginBtn: UIButton!
@@ -297,7 +324,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         weatherDataModel.temperature = Int(1.8 * Double(tempResult - 273)) + 32
         weatherDataModel.city = json["name"].stringValue
         currentCity = json["name"].stringValue
-        weatherDataModel.condition = json["weather"][0]["id"].intValue
+        weatherDataModel.condition = 800//json["weather"][0]["id"].intValue
         weatherType = weatherDataModel.condition
         weatherDataModel.weatherIconName = weatherDataModel.updateWeatherIcon(condition: weatherDataModel.condition)
             
@@ -353,18 +380,22 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         
         case 0...600, 772...799, 900...903, 905...1000 :
             currentPlaylist = "Rainy"
+            spotifyLabel.text = ""
             playMusic(playlist: self.currentPlaylist)
             
         case 800, 904 :
             currentPlaylist = "Sunny"
+            spotifyLabel.text = ""
             playMusic(playlist: self.currentPlaylist)
         
         case 601...700, 903 :
             currentPlaylist = "Snowy"
+            spotifyLabel.text = ""
             playMusic(playlist: self.currentPlaylist)
         
         case 701...771, 801...804 :
             currentPlaylist = "Cloudy"
+            spotifyLabel.text = ""
             playMusic(playlist: self.currentPlaylist)
             
         default :
@@ -382,38 +413,38 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             
             case 0...600, 772...799, 900...903, 905...1000 :
                 currentPlaylist = "Rainy"
+                nowPlaying.text = ""
                 player?.playSpotifyURI("spotify:user:1220300788:playlist:1R6PqPgAke0uFdgg5MAPjV", startingWith: 0, startingWithPosition: 0, callback: { error in
                     if (error == nil) {
                         print("playing Spotify!")
                     }
-                    self.nowPlaying.text = "Spotify"
                 })
             
             case 800, 904 :
                 currentPlaylist = "Sunny"
+                nowPlaying.text = ""
                 player?.playSpotifyURI("spotify:user:1220300788:playlist:1Mty4xNtNK7EtLOzML2EKz", startingWith: 0, startingWithPosition: 0, callback: { error in
                     if (error == nil) {
                         print("playing Spotify!")
                     }
-                    self.nowPlaying.text = "Spotify"
                 })
                 
             case 601...700, 903 :
                 currentPlaylist = "Snowy"
+                nowPlaying.text = ""
                 player?.playSpotifyURI("spotify:user:1220300788:playlist:50uDcKIQn7rIV9tPr4UvlJ", startingWith: 0, startingWithPosition: 0, callback: { error in
                     if (error == nil) {
                         print("playing Spotify!")
                     }
-                    self.nowPlaying.text = "Spotify"
                 })
                 
             case 701...771, 801...804 :
                 currentPlaylist = "Cloudy"
+                nowPlaying.text = ""
                 player?.playSpotifyURI("spotify:user:1220300788:playlist:6p52ug2zJ1MQgYqcaQJ7oX", startingWith: 0, startingWithPosition: 0, callback: { error in
                     if (error == nil) {
                         print("playing Spotify!")
                     }
-                    self.nowPlaying.text = "Spotify"
                 })
                 
             default :
@@ -506,7 +537,6 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
                 
                 })
             print("Spotify")
-            nowPlaying.text = "Spotify"
         }
     }
     
@@ -521,10 +551,8 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
                 if (error == nil) {
                     error?.localizedDescription
                 }
-                
             })
             print("Spotify")
-            nowPlaying.text = "Spotify"
         }
         
     }
@@ -542,7 +570,6 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
                 }
             })
             print("Spotify")
-            nowPlaying.text = "Spotify"
         }
     }
     
@@ -559,7 +586,6 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
                 }
             })
             print("Spotify")
-            nowPlaying.text = "Spotify"
         }
         
     }
@@ -582,7 +608,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         print(nowPlaying.text!)
         
 //        var albumImage = self.musicPlayer.nowPlayingItem;
-//        art.image = (albumImage?.artwork as! UIImage)
+//        albumArtwork.image = albumImage?.artwork as? UIImage
     
     }
     
@@ -609,8 +635,10 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     //    func updateSlider() {
     //      slider.value = Float(musicPlayer.currentPlaybackTime)
     //    }
+    
+    @IBOutlet weak var spotifyLabel: UILabel!
 
-    @IBOutlet weak var art: UIImageView!
+    @IBOutlet weak var albumArtwork: UIImageView!
     
 }
 

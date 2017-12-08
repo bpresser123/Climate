@@ -144,7 +144,7 @@
                                     <segue destination="P1Y-dL-zMM" kind="presentation" identifier="changeCityName" modalTransitionStyle="flipHorizontal" id="dnY-pY-ZHn"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Now Playing..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5pF-mJ-k1Y">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5pF-mJ-k1Y">
                                 <rect key="frame" x="30" y="226" width="133" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -162,6 +162,13 @@
                                     <action selector="loginBtnPressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="dWi-4o-eZS"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6ss-Zl-cXa">
+                                <rect key="frame" x="228" y="225" width="103" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -175,11 +182,12 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="art" destination="a6W-Ps-QTB" id="wBJ-hb-8Ad"/>
+                        <outlet property="albumArtwork" destination="a6W-Ps-QTB" id="GLC-RG-gp2"/>
                         <outlet property="cityLabel" destination="Ssc-Cu-XmK" id="SQd-ZM-AMh"/>
                         <outlet property="dateLabel" destination="SEU-k1-gj2" id="gjf-Ex-grZ"/>
                         <outlet property="mpVolumeViewParentView" destination="7fn-VR-fPq" id="JcB-d7-IPV"/>
                         <outlet property="nowPlaying" destination="5pF-mJ-k1Y" id="ASU-8D-PO9"/>
+                        <outlet property="spotifyLabel" destination="6ss-Zl-cXa" id="c77-AE-K0R"/>
                         <outlet property="spotifyLoginBtn" destination="qMy-PW-EJE" id="8hL-Lu-upi"/>
                         <outlet property="temperatureLabel" destination="AT7-It-Fyf" id="Pgr-EG-xEY"/>
                         <outlet property="timeLabel" destination="2D5-87-g5F" id="aGL-kl-8xY"/>
