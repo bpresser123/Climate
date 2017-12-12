@@ -7,8 +7,7 @@ import MediaPlayer
 import AVFoundation
 import SafariServices
 
-
-class WeatherViewController: UIViewController, CLLocationManagerDelegate, ChangeCityDelegate, ChangeMusicDelegate, SPTAudioStreamingPlaybackDelegate, SPTAudioStreamingDelegate {
+class WeatherViewController: UIViewController, CLLocationManagerDelegate, ChangeCityDelegate, ChangeMusicDelegate, SPTAudioStreamingPlaybackDelegate, SPTAudioStreamingDelegate, spotifyDelegate {
     
     //MARK: - Weather Outlets/Values
     /***************************************************************/
@@ -26,14 +25,13 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     //MARK: - Date/Time Values
     /***************************************************************/
     
-    var hour: Int?
-    var minutes: Int?
-    var seconds: Int?
-    var day: Int?
-    var month: Int?
-    var year: Int?
-    var time = Timer()
-//    var sliderTime = Timer()
+//    var hour: Int?
+//    var minutes: Int?
+//    var seconds: Int?
+//    var day: Int?
+//    var month: Int?
+//    var year: Int?
+//    var time = Timer()
     
     //MARK: - Local Music Values
     /***************************************************************/
@@ -57,15 +55,9 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     var player: SPTAudioStreamingController?
     var loginUrl: URL?
     
-//    var spotifyURL = "https://api.spotify.com/v1/users/bp123/playlists?offset=10"
-//    let spotifyKey = "BQDyQlU7-kTGxXjUoUlEpnkBiGjwWjWLsjNSX-td4kcLxPBwYQTbWA8jeNVab_pW8w46XmW7tTZRfylDiQW6jK1_ObM9Z3sSTHCJn7Kz2t2fG8YULBvZt9nH_NkDmjY9NR0s_TuiMtRwt7tfgWcjFu5D3IdUPmuV0yDCL3C4UgmB__W7AGpkVjvJCW0t39wmqS9qvU7-B5RNcm3c4x3lKfD1qnaEXhvvfrSVGX7fGylC0VZq7-lA"
-//    
-//    typealias JSONStandard = [String : AnyObject]
-//    var names = [String]()
- 
     //MARK: - viewDidLoad
     /***************************************************************/
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -74,14 +66,16 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     locationManager.requestWhenInUseAuthorization()
     locationManager.startUpdatingLocation()
     
-    time = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(WeatherViewController.dateAndTime), userInfo: nil, repeats: true)
+//    time = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(WeatherViewController.dateAndTime), userInfo: nil, repeats: true)
+        
+    var sliderTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: Selector("updateSlider"), userInfo: nil, repeats: true)
         
     let myVolumeView = MPVolumeView(frame: mpVolumeViewParentView.bounds)
     mpVolumeViewParentView.backgroundColor = UIColor.clear
     mpVolumeViewParentView.addSubview(myVolumeView)
         
-    setup()
-    NotificationCenter.default.addObserver(self, selector: #selector(WeatherViewController.updateAfterFirstLogin), name: NSNotification.Name(rawValue: "loginSuccessfull"), object: nil)
+//    setup()
+//    NotificationCenter.default.addObserver(self, selector: #selector(WeatherViewController.updateAfterFirstLogin), name: NSNotification.Name(rawValue: "loginSuccessfull"), object: nil)
         
         
 //    UIView.animate(withDuration: 12.0, delay: 1, options: ([.curveLinear, .repeat]), animations: {() -> Void in
@@ -92,26 +86,41 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
 //      self.spotifyLabel.center = CGPoint(x: 0 - self.spotifyLabel.bounds.size.width / 2, y: self.spotifyLabel.center.y)
 //    }, completion:  { _ in })
         
+    
+     // Slider.maximumValue = Float((musicPlayer.nowPlayingItem?.playbackDuration)!)
         
-        
-//    sliderTime = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(WeatherViewController.updateSlider), userInfo: nil, repeats: true)
-//    slider.maximumValue = Float(musicPlayer.duration)
-//    UIApplication.shared.beginReceivingRemoteControlEvents()
+    }
+
+    //MARK: - Audio Slider
+    /***************************************************************/
+    
+    @IBOutlet weak var Slider: UISlider!
+    
+    
+    @IBAction func changeAudioTime(_ sender: Any) {
+        musicPlayer.stop()
+        musicPlayer.currentPlaybackTime = TimeInterval(Slider.value)
+        musicPlayer.prepareToPlay()
+        musicPlayer.play()
+    }
+    
+    func updateSlider() {
+        Slider.value = Float(musicPlayer.currentPlaybackTime)
         
     }
     
     //MARK: - Spotify Login / Initialize Player
     /***************************************************************/
     
-    func setup () {
-        let redirectURL = "Climate://returnAfterLogin"
-        let clientID = "5f52d115f7254baeafb00380ddc51703"
-        auth.redirectURL = URL(string: redirectURL)
-        auth.clientID = "5f52d115f7254baeafb00380ddc51703"
-        auth.requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPrivateScope]
-        loginUrl = auth.spotifyWebAuthenticationURL()
-        
-    }
+//    func setup () {
+//        let redirectURL = "Climate://returnAfterLogin"
+//        let clientID = "5f52d115f7254baeafb00380ddc51703"
+//        auth.redirectURL = URL(string: redirectURL)
+//        auth.clientID = "5f52d115f7254baeafb00380ddc51703"
+//        auth.requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPrivateScope]
+//        loginUrl = auth.spotifyWebAuthenticationURL()
+//        
+//    }
     
     func initializaPlayer(authSession:SPTSession){
         if player == nil {
@@ -126,24 +135,24 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         
     }
     
-    func updateAfterFirstLogin () {
-        
-        spotifyLoginBtn.isHidden = true
-        let userDefaults = UserDefaults.standard
-        
-        if let sessionObj:AnyObject = userDefaults.object(forKey: "SpotifySession") as AnyObject? {
-            
-            let sessionDataObj = sessionObj as! Data
-            let firstTimeSession = NSKeyedUnarchiver.unarchiveObject(with: sessionDataObj) as! SPTSession
-            
-            self.session = firstTimeSession
-            initializaPlayer(authSession: session)
-            self.spotifyLoginBtn.isHidden = true
-            // self.loadingLabel.isHidden = false
-          }
-        
-        }
-        
+//    func updateAfterFirstLogin () {
+//        
+//        spotifyLoginBtn.isHidden = true
+//        let userDefaults = UserDefaults.standard
+//        
+//        if let sessionObj:AnyObject = userDefaults.object(forKey: "SpotifySession") as AnyObject? {
+//            
+//            let sessionDataObj = sessionObj as! Data
+//            let firstTimeSession = NSKeyedUnarchiver.unarchiveObject(with: sessionDataObj) as! SPTSession
+//            
+//            self.session = firstTimeSession
+//            initializaPlayer(authSession: session)
+//            self.spotifyLoginBtn.isHidden = true
+//            // self.loadingLabel.isHidden = false
+//          }
+//        
+//        }
+    
     func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
 
         audioStreaming.playSpotifyURI("", startingWith: 0, startingWithPosition: 0, callback: { error in
@@ -171,9 +180,9 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         
         DispatchQueue.main.async() {
         
-        if let trackName = audioStreaming.metadata.currentTrack?.artistName {
+        if let artistName = audioStreaming.metadata.currentTrack?.artistName, let trackName = audioStreaming.metadata.currentTrack?.name {
             
-            self.spotifyLabel.text = trackName
+            self.spotifyLabel.text = (" Artist: ") + (artistName) + (" Track: ") + (trackName)
     
             self.view.setNeedsDisplay()
             self.nowPlaying.setNeedsDisplay()
@@ -197,16 +206,15 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
       }
     }
 
-    @IBOutlet weak var spotifyLoginBtn: UIButton!
-    
-    @IBAction func loginBtnPressed(_ sender: Any) {
-        if UIApplication.shared.openURL(loginUrl!) {
-            if auth.canHandle(auth.redirectURL) {
-                // To do - build in error handling
-            }
-        }
-    }
-    
+//    @IBOutlet weak var spotifyLoginBtn: UIButton!
+//    
+//    @IBAction func loginBtnPressed(_ sender: Any) {
+//        if UIApplication.shared.openURL(loginUrl!) {
+//            if auth.canHandle(auth.redirectURL) {
+//                // To do - build in error handling
+//            }
+//        }
+//    }
     
     //MARK: - Privacy/Preferences
     /***************************************************************/
@@ -241,19 +249,17 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     /***************************************************************/
     
     @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var timeLabel: UILabel!
+//    @IBOutlet weak var timeLabel: UILabel!
     
     func dateAndTime() {
-        
-    let time = DateFormatter()
     let date =  DateFormatter()
-    
-    time.timeStyle = .medium
     date.dateStyle = .full
-        
-    timeLabel.text = time.string(from: Date())
     dateLabel.text = date.string(from: Date())
-        
+//    let time = DateFormatter()
+//    time.timeStyle = .medium
+//    timeLabel.text = time.string(from: Date())
+////////////////////////////////////////////////
+
 //    let dateTwo = Date()
 //    let calendar = Calendar.current
         
@@ -467,50 +473,6 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             }
     
         }
-
-//        func callAlamoSpotify(url: String) {
-//            
-//            Alamofire.request(url, method: .get, parameters: nil, headers: ["Authorization": "BQDiJBlf9dmU0n5nwmizx0AJ0JR_q-yFJQw7HjUc12kFBlGDJt1sOqNh6vrZ7BJfo2gzCgqghJgZa8KYqXxjNfFH3mdsbRer3_NzAKMHOI4QEHPHBQakOjWkbJ3wz9kt1hKUe1UjTZH6tDazb23-cYCS"]).response { (response) in
-//               self.parseSpotifyData(JSONData: response.data!)
-//            }
-//            Alamofire.request(url).responseJSON(completionHandler: {
-//                response in
-//    
-//                self.parseSpotifyData(JSONData: response.data!)
-//            })
-//
-//        }
-//    
-//        func parseSpotifyData(JSONData : Data) {
-//    
-//          do {
-//            let readableJSON = try JSONSerialization.jsonObject(with: JSONData, options: .mutableContainers) as! JSONStandard
-//            if let playlists = readableJSON["playlists"] as? JSONStandard {
-//                
-//              if let items = playlists["items"] as? Array {
-               // for i in 0..< items.count {
-//                    
-//                  let item = items[i] as! JSONStandard
-//    
-//                  let name = item["name"] as! String
-//    
-//                  names.append(name)
-//    
-//                }
-//              }
-//            }
-//    
-//          print(readableJSON as Any)
-//    
-//          }
-//          catch {
-//            print(error)
-//          }
-//        }
-//
-//        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//            return names.count
-//        }
     
     //MARK: - Change City Delegate methods
     /***************************************************************/
@@ -530,6 +492,9 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             
             destinationVC.delegate = self
             destinationVC.musicChangeDelegate = self
+            
+            destinationVC.spotifyDelegate = self
+        
         }
     }
     
@@ -617,41 +582,22 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     
         musicPlayer.play()
         
-        var currentItem = self.musicPlayer.nowPlayingItem;
+        let currentItem = self.musicPlayer.nowPlayingItem;
         nowPlaying.text = currentItem?.value(forProperty: MPMediaItemPropertyArtist) as? String
         
         let size = CGSize(width: 100, height: 100)
         albumArtwork.image = currentItem?.artwork?.image(at: size)
         print(nowPlaying.text!)
-        
-//        var albumImage = self.musicPlayer.nowPlayingItem;
-//        albumArtwork.image = albumImage?.artwork as? UIImage
-    
+
     }
     
     func didSetAudio(sourceType: Bool) {
         self.audioSource = sourceType
     }
     
-    
-    @IBOutlet weak var slider: UISlider!
-   
     @IBOutlet weak var mpVolumeViewParentView: UIView!
     
     @IBOutlet weak var nowPlaying: UILabel!
-    
-    //    @IBAction func songTimeSlider(_ sender: Any) {
-    //
-    //        musicPlayer.stop()
-    //        musicPlayer.currentPlaybackTime = TimeInterval(slider.value)
-    //        musicPlayer.prepareToPlay()
-    //        musicPlayer.play()
-    //
-    //    }
-    
-    //    func updateSlider() {
-    //      slider.value = Float(musicPlayer.currentPlaybackTime)
-    //    }
     
     @IBOutlet weak var spotifyLabel: UILabel!
 

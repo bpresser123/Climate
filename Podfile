@@ -10,5 +10,6 @@ target 'Climate' do
     pod 'Alamofire'
     pod 'SVProgressHUD'
     pod 'Hex'
+    pod 'MarqueeLabel/Swift'
 
 end

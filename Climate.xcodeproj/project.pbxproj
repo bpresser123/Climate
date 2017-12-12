@@ -15,6 +15,7 @@
 		63E28AF91B99C36100FBF6E0 /* WeatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E28AF51B99C36100FBF6E0 /* WeatherViewController.swift */; };
 		63E28AFF1B99C3B300FBF6E0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63E28AFE1B99C3B300FBF6E0 /* LaunchScreen.xib */; };
 		6517666AE62EAE7E9785B830 /* Pods_Climate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 560B4CB46A774CC214724749 /* Pods_Climate.framework */; };
+		E03307651FDB40B70026F02D /* marqueeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03307641FDB40B70026F02D /* marqueeLabel.swift */; };
 		E0E205FB1FD378E6007D9E85 /* BridgeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0E205FA1FD378E6007D9E85 /* BridgeViewController.m */; };
 		E0E205FF1FD379C6007D9E85 /* SpotifyAudioPlayback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0E205FC1FD379C6007D9E85 /* SpotifyAudioPlayback.framework */; };
 		E0E206001FD379C6007D9E85 /* SpotifyAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0E205FD1FD379C6007D9E85 /* SpotifyAuthentication.framework */; };
@@ -34,6 +35,7 @@
 		63E28AFE1B99C3B300FBF6E0 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		8A4499103C4B8EE02F361B55 /* Pods-Climate.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Climate.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Climate/Pods-Climate.debug.xcconfig"; sourceTree = "<group>"; };
 		9337AD82BF081F1371B5894F /* Pods-Climate.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Climate.release.xcconfig"; path = "Pods/Target Support Files/Pods-Climate/Pods-Climate.release.xcconfig"; sourceTree = "<group>"; };
+		E03307641FDB40B70026F02D /* marqueeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = marqueeLabel.swift; sourceTree = "<group>"; };
 		E0E205F81FD378E6007D9E85 /* Climate-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Climate-Bridging-Header.h"; sourceTree = "<group>"; };
 		E0E205F91FD378E6007D9E85 /* BridgeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgeViewController.h; sourceTree = "<group>"; };
 		E0E205FA1FD378E6007D9E85 /* BridgeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BridgeViewController.m; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				E0E205F91FD378E6007D9E85 /* BridgeViewController.h */,
 				E0E205FA1FD378E6007D9E85 /* BridgeViewController.m */,
 				E0E205F81FD378E6007D9E85 /* Climate-Bridging-Header.h */,
+				E03307641FDB40B70026F02D /* marqueeLabel.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Climate/Pods-Climate-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Hex/Hex.framework",
+				"${BUILT_PRODUCTS_DIR}/MarqueeLabel/MarqueeLabel.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
@@ -238,6 +242,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Hex.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MarqueeLabel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 			);
@@ -287,6 +292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				63E28AF11B99C35700FBF6E0 /* WeatherDataModel.swift in Sources */,
+				E03307651FDB40B70026F02D /* marqueeLabel.swift in Sources */,
 				63E28AF91B99C36100FBF6E0 /* WeatherViewController.swift in Sources */,
 				63E28AD11B99C32400FBF6E0 /* AppDelegate.swift in Sources */,
 				E0E205FB1FD378E6007D9E85 /* BridgeViewController.m in Sources */,
