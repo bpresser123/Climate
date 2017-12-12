@@ -122,6 +122,24 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
 //        
 //    }
     
+//    func updateAfterFirstLogin () {
+//
+//        spotifyLoginBtn.isHidden = true
+//        let userDefaults = UserDefaults.standard
+//
+//        if let sessionObj:AnyObject = userDefaults.object(forKey: "SpotifySession") as AnyObject? {
+//
+//            let sessionDataObj = sessionObj as! Data
+//            let firstTimeSession = NSKeyedUnarchiver.unarchiveObject(with: sessionDataObj) as! SPTSession
+//
+//            self.session = firstTimeSession
+//            initializaPlayer(authSession: session)
+//            self.spotifyLoginBtn.isHidden = true
+//            // self.loadingLabel.isHidden = false
+//          }
+//        
+//        }
+    
     func initializaPlayer(authSession:SPTSession){
         if player == nil {
             
@@ -134,24 +152,6 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         }
         
     }
-    
-//    func updateAfterFirstLogin () {
-//        
-//        spotifyLoginBtn.isHidden = true
-//        let userDefaults = UserDefaults.standard
-//        
-//        if let sessionObj:AnyObject = userDefaults.object(forKey: "SpotifySession") as AnyObject? {
-//            
-//            let sessionDataObj = sessionObj as! Data
-//            let firstTimeSession = NSKeyedUnarchiver.unarchiveObject(with: sessionDataObj) as! SPTSession
-//            
-//            self.session = firstTimeSession
-//            initializaPlayer(authSession: session)
-//            self.spotifyLoginBtn.isHidden = true
-//            // self.loadingLabel.isHidden = false
-//          }
-//        
-//        }
     
     func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
 
@@ -255,6 +255,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     let date =  DateFormatter()
     date.dateStyle = .full
     dateLabel.text = date.string(from: Date())
+        
 //    let time = DateFormatter()
 //    time.timeStyle = .medium
 //    timeLabel.text = time.string(from: Date())

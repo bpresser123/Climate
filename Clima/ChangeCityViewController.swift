@@ -20,7 +20,6 @@ class ChangeCityViewController: UIViewController {
     var player: SPTAudioStreamingController?
     var loginUrl: URL?
     
-    
     let defaults:UserDefaults = UserDefaults.standard
     
     override func viewDidLoad() {
@@ -37,34 +36,6 @@ class ChangeCityViewController: UIViewController {
           }
         
         }
-    
-    func setup () {
-        let redirectURL = "Climate://returnAfterLogin"
-        let clientID = "5f52d115f7254baeafb00380ddc51703"
-        auth.redirectURL = URL(string: redirectURL)
-        auth.clientID = "5f52d115f7254baeafb00380ddc51703"
-        auth.requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPrivateScope]
-        loginUrl = auth.spotifyWebAuthenticationURL()
-        
-    }
-    
-    func updateAfterFirstLogin () {
-        
-        spotifyLoginBtn.isHidden = true
-        let userDefaults = UserDefaults.standard
-        
-        if let sessionObj:AnyObject = userDefaults.object(forKey: "SpotifySession") as AnyObject? {
-            
-            let sessionDataObj = sessionObj as! Data
-            let firstTimeSession = NSKeyedUnarchiver.unarchiveObject(with: sessionDataObj) as! SPTSession
-            
-            self.session = firstTimeSession
-            spotifyDelegate?.initializaPlayer(authSession: session)
-            self.spotifyLoginBtn.isHidden = true
-            // self.loadingLabel.isHidden = false
-        }
-        
-    }
     
     //MARK: - Delegates
     /***************************************************************/
@@ -107,14 +78,14 @@ class ChangeCityViewController: UIViewController {
         
     }
         
-    //MARK: - Back Buttons
+    //MARK: - Back Button
     /***************************************************************/
     
     @IBAction func backButtonPressed(_ sender: AnyObject) {
         self.dismiss(animated: true, completion: nil)
     }
     
-    //MARK: - Spotify Login Button
+    //MARK: - Spotify Login
     /***************************************************************/
     
     @IBOutlet weak var spotifyLoginBtn: UIButton!
@@ -125,6 +96,34 @@ class ChangeCityViewController: UIViewController {
                 // To do - build in error handling
             }
         }
+    }
+    
+    func setup () {
+        let redirectURL = "Climate://returnAfterLogin"
+        let clientID = "5f52d115f7254baeafb00380ddc51703"
+        auth.redirectURL = URL(string: redirectURL)
+        auth.clientID = "5f52d115f7254baeafb00380ddc51703"
+        auth.requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPrivateScope]
+        loginUrl = auth.spotifyWebAuthenticationURL()
+        
+    }
+    
+    func updateAfterFirstLogin () {
+        
+        spotifyLoginBtn.isHidden = true
+        let userDefaults = UserDefaults.standard
+        
+        if let sessionObj:AnyObject = userDefaults.object(forKey: "SpotifySession") as AnyObject? {
+            
+            let sessionDataObj = sessionObj as! Data
+            let firstTimeSession = NSKeyedUnarchiver.unarchiveObject(with: sessionDataObj) as! SPTSession
+            
+            self.session = firstTimeSession
+            spotifyDelegate?.initializaPlayer(authSession: session)
+            self.spotifyLoginBtn.isHidden = true
+            // self.loadingLabel.isHidden = false
+        }
+        
     }
    
 }
