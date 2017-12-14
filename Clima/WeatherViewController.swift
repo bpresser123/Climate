@@ -81,13 +81,13 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
 //    UIView.animate(withDuration: 12.0, delay: 1, options: ([.curveLinear, .repeat]), animations: {() -> Void in
 //      self.nowPlaying.center = CGPoint(x: 0 - self.nowPlaying.bounds.size.width / 2, y: self.nowPlaying.center.y)
 //    }, completion:  { _ in })
-//
+
 //    UIView.animate(withDuration: 12.0, delay: 1, options: ([.curveLinear, .repeat]), animations: {() -> Void in
 //      self.spotifyLabel.center = CGPoint(x: 0 - self.spotifyLabel.bounds.size.width / 2, y: self.spotifyLabel.center.y)
 //    }, completion:  { _ in })
         
     
-     // Slider.maximumValue = Float((musicPlayer.nowPlayingItem?.playbackDuration)!)
+//      Slider.maximumValue = Float((musicPlayer.nowPlayingItem?.playbackDuration)!)
         
     }
 

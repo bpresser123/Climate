@@ -231,14 +231,15 @@
                                     <constraint firstAttribute="height" constant="221" id="fOA-8p-aei"/>
                                 </constraints>
                             </view>
-                            <segmentedControl contentMode="scaleAspectFit" fixedFrame="YES" selected="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Tee-a1-WYN">
+                            <segmentedControl contentMode="scaleAspectFill" fixedFrame="YES" selected="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bordered" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Tee-a1-WYN">
                                 <rect key="frame" x="72" y="267" width="270" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <segments>
                                     <segment title="Local Music"/>
                                     <segment title="Spotify"/>
                                 </segments>
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
                                     <action selector="segmentedValueChange:" destination="P1Y-dL-zMM" eventType="valueChanged" id="8tK-id-Evj"/>
                                 </connections>
