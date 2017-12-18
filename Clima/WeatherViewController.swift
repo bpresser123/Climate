@@ -313,7 +313,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         weatherDataModel.temperature = Int(1.8 * Double(tempResult - 273)) + 32
         weatherDataModel.city = json["name"].stringValue
         currentCity = json["name"].stringValue
-        weatherDataModel.condition = 800//json["weather"][0]["id"].intValue
+        weatherDataModel.condition = json["weather"][0]["id"].intValue
         weatherType = weatherDataModel.condition
         weatherDataModel.weatherIconName = weatherDataModel.updateWeatherIcon(condition: weatherDataModel.condition)
             
@@ -519,6 +519,22 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         if audioSource == true {
             print("Local Music")
             musicPlayer.skipToNextItem()
+            
+            let currentItem = self.musicPlayer.nowPlayingItem;
+            let artist = currentItem?.value(forProperty: MPMediaItemPropertyArtist) as? String
+            let album = currentItem?.value(forProperty: MPMediaItemPropertyAlbumTitle) as? String
+            let track = currentItem?.value(forProperty: MPMediaItemPropertyTitle) as? String
+            
+            trackName.text = track
+            artistAlbumName.text = (artist)! + (" - ") + (album)!
+            
+            trackName.textAlignment = .center
+            artistAlbumName.textAlignment = .center
+            
+            
+            let size = CGSize(width: 100, height: 100)
+            albumArtwork.image = currentItem?.artwork?.image(at: size)
+            print(trackName.text!)
         }
         else {
             player?.skipNext({ (error) in
@@ -535,6 +551,22 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         if audioSource == true {
             print("Local Music")
             musicPlayer.skipToPreviousItem()
+            
+            let currentItem = self.musicPlayer.nowPlayingItem;
+            let artist = currentItem?.value(forProperty: MPMediaItemPropertyArtist) as? String
+            let album = currentItem?.value(forProperty: MPMediaItemPropertyAlbumTitle) as? String
+            let track = currentItem?.value(forProperty: MPMediaItemPropertyTitle) as? String
+            
+            trackName.text = track
+            artistAlbumName.text = (artist)! + (" - ") + (album)!
+            
+            trackName.textAlignment = .center
+            artistAlbumName.textAlignment = .center
+            
+            
+            let size = CGSize(width: 100, height: 100)
+            albumArtwork.image = currentItem?.artwork?.image(at: size)
+            print(trackName.text!)
         }
         else {
             player?.skipPrevious({ (error) in
@@ -567,6 +599,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         let artist = currentItem?.value(forProperty: MPMediaItemPropertyArtist) as? String
         let album = currentItem?.value(forProperty: MPMediaItemPropertyAlbumTitle) as? String
         let track = currentItem?.value(forProperty: MPMediaItemPropertyTitle) as? String
+        
         trackName.text = track
         artistAlbumName.text = (artist)! + (" - ") + (album)!
         
