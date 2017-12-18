@@ -20,6 +20,8 @@ class ChangeCityViewController: UIViewController {
     var player: SPTAudioStreamingController?
     var loginUrl: URL?
     
+    var SpotStaus: Bool?
+
     let defaults:UserDefaults = UserDefaults.standard
     
     override func viewDidLoad() {
@@ -33,9 +35,17 @@ class ChangeCityViewController: UIViewController {
             let selectedIndex = value as! Int
             segSwitch.selectedSegmentIndex = selectedIndex
             
-          }
-        
         }
+        
+        if let spot = UserDefaults.standard.object(forKey: "loggedIn") as? Bool {
+            SpotStaus = spot
+        }
+        
+//        if SpotStaus == true {
+//            self.spotifyLoginBtn.isHidden = true
+//        }
+        
+    }
     
     //MARK: - Delegates
     /***************************************************************/
@@ -87,17 +97,7 @@ class ChangeCityViewController: UIViewController {
     
     //MARK: - Spotify Login
     /***************************************************************/
-    
-    @IBOutlet weak var spotifyLoginBtn: UIButton!
-    
-    @IBAction func loginBtnPressed(_ sender: Any) {
-        if UIApplication.shared.openURL(loginUrl!) {
-            if auth.canHandle(auth.redirectURL) {
-                // To do - build in error handling
-            }
-        }
-    }
-    
+        
     func setup () {
         let redirectURL = "Climate://returnAfterLogin"
         let clientID = "5f52d115f7254baeafb00380ddc51703"
@@ -119,11 +119,24 @@ class ChangeCityViewController: UIViewController {
             let firstTimeSession = NSKeyedUnarchiver.unarchiveObject(with: sessionDataObj) as! SPTSession
             
             self.session = firstTimeSession
-            spotifyDelegate?.initializaPlayer(authSession: session)
             self.spotifyLoginBtn.isHidden = true
+            
+            UserDefaults.standard.set(true, forKey: "loggedIn")
+            
+            spotifyDelegate?.initializaPlayer(authSession: session)
             // self.loadingLabel.isHidden = false
         }
         
+    }
+    
+    @IBOutlet weak var spotifyLoginBtn: UIButton!
+    
+    @IBAction func loginBtnPressed(_ sender: Any) {
+        if UIApplication.shared.openURL(loginUrl!) {
+            if auth.canHandle(auth.redirectURL) {
+                // To do - build in error handling
+            }
+        }
     }
    
 }
