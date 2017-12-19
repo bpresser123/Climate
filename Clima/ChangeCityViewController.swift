@@ -41,9 +41,9 @@ class ChangeCityViewController: UIViewController {
             SpotStaus = spot
         }
         
-//        if SpotStaus == true {
-//            self.spotifyLoginBtn.isHidden = true
-//        }
+        if SpotStaus == true {
+            self.spotifyLoginBtn.isHidden = true
+        }
         
     }
     

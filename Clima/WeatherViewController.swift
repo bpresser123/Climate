@@ -85,21 +85,26 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     //MARK: - Audio Slider
     /***************************************************************/
     
-    @IBOutlet weak var Slider: UISlider!
+//    @IBOutlet weak var Slider: UISlider!
+//    
+//    
+//    @IBAction func changeAudioTime(_ sender: Any) {
+//        musicPlayer.pause()
+//        musicPlayer.currentPlaybackTime = TimeInterval(Slider.value)
+//        musicPlayer.prepareToPlay()
+//        musicPlayer.play()
+//        
+//    }
+//    
+//    func updateSlider() {
+//        Slider.value = Float(musicPlayer.currentPlaybackTime)
+//        
+//    }
     
-    
-    @IBAction func changeAudioTime(_ sender: Any) {
-        musicPlayer.stop()
-        musicPlayer.currentPlaybackTime = TimeInterval(Slider.value)
-        musicPlayer.prepareToPlay()
-        musicPlayer.play()
-        
-    }
-    
-    func updateSlider() {
-        Slider.value = Float(musicPlayer.currentPlaybackTime)
-        
-    }
+//    func updateSliderForSpotify() {
+//        Slider.value = Float(player?.metadata.currentTrack)
+//        
+//    }
     
     //MARK: - Spotify Login / Initialize Player
     /***************************************************************/
@@ -137,17 +142,17 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
             try! AVAudioSession.sharedInstance().setActive(false)
         }
         
-        var sliderTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(WeatherViewController.updateSlider), userInfo: nil, repeats: true)
-        
-        if let duration = audioStreaming.metadata.currentTrack?.duration {
-            
-            Slider.maximumValue = Float(duration)
-        }
-            
-        else {
-            
-            Slider.maximumValue = 10.1
-        }
+//        var sliderTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(WeatherViewController.updateSlider), userInfo: nil, repeats: true)
+//        
+//        if let duration = audioStreaming.metadata.currentTrack?.duration {
+//            
+//            Slider.maximumValue = Float(duration)
+//        }
+//            
+//        else {
+//            
+//            Slider.maximumValue = 10.1
+//        }
         
     }
     
@@ -211,6 +216,12 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     
     @IBAction func refreshWeather(_ sender: UIButton) {
         //viewDidLoad()
+        
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        
         musicSource()
     }
     
@@ -611,12 +622,12 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
         albumArtwork.image = currentItem?.artwork?.image(at: size)
         print(trackName.text!)
         
-        var sliderTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(WeatherViewController.updateSlider), userInfo: nil, repeats: true)
+//        var sliderTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(WeatherViewController.updateSlider), userInfo: nil, repeats: true)
+//        
+//        if let duration = musicPlayer.nowPlayingItem?.playbackDuration {
+//            
+//            Slider.maximumValue = Float(duration)
         
-        if let duration = musicPlayer.nowPlayingItem?.playbackDuration {
-            
-            Slider.maximumValue = Float(duration)
-            
 //            let minSec: Float64 = duration
 //            
 //            let mySec = Int(minSec) % 60
@@ -626,12 +637,12 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
 //            
 //            trackTime.text = myTime
             
-        }
-            
-        else {
-            
-            Slider.maximumValue = 10.1
-        }
+//        }
+//            
+//        else {
+//            
+//            Slider.maximumValue = 10.1
+//        }
 
     }
     
@@ -649,7 +660,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
 
     @IBOutlet weak var albumArtwork: UIImageView!
     
-    @IBOutlet weak var trackTime: UILabel!
+//    @IBOutlet weak var trackTime: UILabel!
 }
 
 
